@@ -1,0 +1,160 @@
+.video-player-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.video-wrapper {
+  position: relative;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.video-element {
+  width: 100%;
+  display: block;
+}
+
+.video-controls {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.play-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.play-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.seek-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.seek-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+}
+
+.time-display {
+  color: white;
+  font-size: 14px;
+  min-width: 100px;
+}
+
+.checkpoint-indicator {
+  background: rgba(102, 126, 234, 0.9);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.video-info {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.video-info h2 {
+  margin: 0 0 12px 0;
+  color: #1a202c;
+}
+
+.video-info p {
+  color: #718096;
+  line-height: 1.6;
+}
+
+.checkpoints-list {
+  margin-top: 30px;
+}
+
+.checkpoints-list h3 {
+  margin: 0 0 15px 0;
+  color: #1a202c;
+  font-size: 18px;
+}
+
+.checkpoints-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.checkpoints-list li {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  background: #f7fafc;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: background 0.3s;
+}
+
+.checkpoints-list li.completed {
+  background: #d4f4dd;
+}
+
+.checkpoint-number {
+  background: #667eea;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.checkpoint-time {
+  color: #4a5568;
+  font-weight: 600;
+  min-width: 60px;
+}
+
+.checkpoint-type {
+  color: #718096;
+  font-size: 14px;
+  flex: 1;
+  text-transform: capitalize;
+}
+
+.check-mark {
+  color: #22863a;
+  font-size: 20px;
+}
