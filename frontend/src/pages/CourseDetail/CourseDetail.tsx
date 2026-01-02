@@ -204,7 +204,12 @@ const CourseDetail: React.FC = () => {
                   {module.videos && module.videos.length > 0 && (
                     <div className="videos-list">
                       {module.videos.map((video: any, vidIndex: number) => (
-                        <div key={video._id} className="video-item">
+                        <div 
+                          key={video._id} 
+                          className="video-item clickable"
+                          onClick={() => navigate(`/video/${video._id}`)}
+                          style={{ cursor: 'pointer' }}
+                        >
                           <FaVideo className="video-icon" />
                           <span className="video-title">
                             {vidIndex + 1}. {video.title}

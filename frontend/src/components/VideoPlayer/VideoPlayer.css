@@ -1,15 +1,22 @@
 .video-player-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 2rem;
+  animation: fadeIn 0.5s ease-out;
 }
 
 .video-wrapper {
   position: relative;
   background: #000;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-xl);
+  transition: var(--transition);
+}
+
+.video-wrapper:hover {
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
 }
 
 .video-element {
@@ -18,83 +25,116 @@
 }
 
 .video-controls {
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-  padding: 20px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  padding: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 1rem;
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.video-wrapper:hover .video-controls {
+  transform: translateY(0);
 }
 
 .play-button {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(102, 126, 234, 0.9);
+  backdrop-filter: blur(10px);
   border: none;
   color: white;
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s;
+  transition: var(--transition);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .play-button:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(102, 126, 234, 1);
+  transform: scale(1.1);
 }
 
 .seek-bar {
   flex: 1;
-  height: 6px;
-  border-radius: 3px;
+  height: 8px;
+  border-radius: 4px;
   outline: none;
   background: rgba(255, 255, 255, 0.3);
   cursor: pointer;
+  transition: var(--transition);
+}
+
+.seek-bar:hover {
+  height: 10px;
 }
 
 .seek-bar::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: white;
   cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: var(--transition);
+}
+
+.seek-bar::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
 }
 
 .time-display {
   color: white;
-  font-size: 14px;
-  min-width: 100px;
+  font-size: 0.95rem;
+  min-width: 110px;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .checkpoint-indicator {
-  background: rgba(102, 126, 234, 0.9);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 6px 12px;
+  padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: pulse 2s infinite;
 }
 
 .video-info {
   background: white;
-  border-radius: 12px;
-  padding: 30px;
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+}
+
+.video-info:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 .video-info h2 {
-  margin: 0 0 12px 0;
-  color: #1a202c;
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
 .video-info p {
-  color: #718096;
-  line-height: 1.6;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 1.05rem;
 }
 
 .checkpoints-list {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-import { FaGraduationCap, FaUser, FaSignOutAlt, FaPlus, FaCog, FaChalkboardTeacher, FaBook } from 'react-icons/fa';
+import { FaGraduationCap, FaUser, FaSignOutAlt, FaPlus, FaCog, FaChalkboardTeacher, FaBook, FaCalendarCheck } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar: React.FC = () => {
@@ -43,9 +43,15 @@ const Navbar: React.FC = () => {
             </>
           ) : (
             // Learner menu
-            <Link to="/learner/dashboard" className="nav-link">
-              <FaBook /> My Courses
-            </Link>
+            <>
+              <Link to="/learner/dashboard" className="nav-link">
+                <FaBook /> My Courses
+              </Link>
+              
+              <Link to="/attendance" className="nav-link">
+                <FaCalendarCheck /> Attendance
+              </Link>
+            </>
           )}
           
           <div className="user-menu">
@@ -54,6 +60,9 @@ const Navbar: React.FC = () => {
               <span>{user?.name}</span>
               <span className="user-role">{user?.role}</span>
             </div>
+            <Link to="/profile" className="profile-link">
+              <FaCog /> Profile
+            </Link>
             <button onClick={handleLogout} className="logout-btn">
               <FaSignOutAlt /> Logout
             </button>

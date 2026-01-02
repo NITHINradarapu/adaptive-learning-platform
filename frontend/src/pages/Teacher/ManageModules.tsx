@@ -20,6 +20,7 @@ interface Video {
   videoUrl: string;
   duration: number;
   order: number;
+  questionCount?: number;
 }
 
 const ManageModules: React.FC = () => {
@@ -81,7 +82,21 @@ const ManageModules: React.FC = () => {
   const loadVideos = async (moduleId: string) => {
     try {
       const response = await apiService.getModuleVideos(moduleId);
-      setVideos(prev => ({ ...prev, [moduleId]: response.data || [] }));
+      const videosData = response.data || [];
+      
+      // Load question count for each video
+      const videosWithQuestions = await Promise.all(
+        videosData.map(async (video: Video) => {
+          try {
+            const questionsResponse = await apiService.getVideoQuestions(video._id);
+            return { ...video, questionCount: questionsResponse.data?.length || 0 };
+          } catch {
+            return { ...video, questionCount: 0 };
+          }
+        })
+      );
+      
+      setVideos(prev => ({ ...prev, [moduleId]: videosWithQuestions }));
     } catch (err) {
       console.error('Failed to load videos', err);
     }
@@ -280,6 +295,12 @@ const ManageModules: React.FC = () => {
                 <div className="module-actions">
                   <button
                     className="btn-primary btn-sm"
+                    onClick={() => navigate(`/teacher/module/${module._id}/edit`)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn-primary btn-sm"
                     onClick={() => {
                       setSelectedModule(module._id);
                       setShowVideoForm(true);
@@ -300,6 +321,10 @@ const ManageModules: React.FC = () => {
               {showVideoForm && selectedModule === module._id && (
                 <div className="video-form">
                   <h4>Add Video to Module</h4>
+                  <div className="alert alert-info" style={{ marginBottom: '1rem', padding: '0.75rem', background: '#e3f2fd', borderLeft: '4px solid #2196f3', borderRadius: '4px' }}>
+                    <strong>⚠️ Important:</strong> After adding this video, click the "Questions" button to add interactive quizzes. 
+                    Students must answer these questions during playback to mark attendance!
+                  </div>
                   <form onSubmit={handleCreateVideo}>
                     <div className="form-group">
                       <label>Video Title *</label>
@@ -361,19 +386,58 @@ const ManageModules: React.FC = () => {
                   videos[module._id].map((video) => (
                     <div key={video._id} className="video-item">
                       <div className="video-info" onClick={() => handlePlayVideo(video)} style={{ cursor: 'pointer' }}>
-                        <strong>{video.order}. {video.title}</strong>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <strong>{video.order}. {video.title}</strong>
+                          {(video.questionCount === 0 || !video.questionCount) && (
+                            <span style={{ 
+                              background: '#ff9800', 
+                              color: 'white', 
+                              padding: '2px 8px', 
+                              borderRadius: '12px', 
+                              fontSize: '0.75rem',
+                              fontWeight: 'bold'
+                            }}>
+                              ⚠ No Questions
+                            </span>
+                          )}
+                          {video.questionCount && video.questionCount > 0 && (
+                            <span style={{ 
+                              background: '#4caf50', 
+                              color: 'white', 
+                              padding: '2px 8px', 
+                              borderRadius: '12px', 
+                              fontSize: '0.75rem'
+                            }}>
+                              ✓ {video.questionCount} Question{video.questionCount !== 1 ? 's' : ''}
+                            </span>
+                          )}
+                        </div>
                         <p>{video.description}</p>
                         <span className="video-meta">
                           {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
                         </span>
                         <small style={{ color: '#666', marginTop: '5px', display: 'block' }}>▶ Click to play</small>
                       </div>
-                      <button
-                        className="btn-danger btn-sm"
-                        onClick={() => handleDeleteVideo(video._id, module._id)}
-                      >
-                        Delete
-                      </button>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          className="btn-primary btn-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/teacher/video/${video._id}/questions`);
+                          }}
+                        >
+                          Questions
+                        </button>
+                        <button
+                          className="btn-danger btn-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteVideo(video._id, module._id);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   ))
                 ) : (

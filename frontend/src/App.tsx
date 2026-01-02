@@ -8,10 +8,15 @@ import Register from './pages/Auth/Register';
 import LearnerDashboard from './pages/Learner/LearnerDashboard';
 import TeacherDashboard from './pages/Teacher/TeacherDashboard';
 import ManageModules from './pages/Teacher/ManageModules';
+import EditModule from './pages/Teacher/EditModule';
+import ManageQuestions from './pages/Teacher/ManageQuestions';
 import AdminCourses from './pages/Admin/AdminCourses';
 import ManageCourses from './pages/Admin/ManageCourses';
 import EditCourse from './pages/Admin/EditCourse';
 import CourseDetail from './pages/CourseDetail/CourseDetail';
+import VideoPlayer from './components/VideoPlayer/VideoPlayer';
+import Profile from './pages/Profile/Profile';
+import Attendance from './pages/Attendance/Attendance';
 import './App.css';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -114,6 +119,24 @@ const App: React.FC = () => {
               }
             />
             
+            <Route
+              path="/teacher/module/:moduleId/edit"
+              element={
+                <TeacherRoute>
+                  <EditModule />
+                </TeacherRoute>
+              }
+            />
+            
+            <Route
+              path="/teacher/video/:videoId/questions"
+              element={
+                <TeacherRoute>
+                  <ManageQuestions />
+                </TeacherRoute>
+              }
+            />
+            
             {/* Legacy admin routes - redirect to teacher routes */}
             <Route path="/admin/courses" element={<Navigate to="/teacher/create-course" replace />} />
             <Route path="/admin/manage-courses" element={<Navigate to="/teacher/manage-courses" replace />} />
@@ -126,8 +149,36 @@ const App: React.FC = () => {
                   <CourseDetail />
                 </PrivateRoute>
               }
+            />            
+            {/* Video Player */}
+            <Route
+              path="/video/:videoId"
+              element={
+                <PrivateRoute>
+                  <VideoPlayer />
+                </PrivateRoute>
+              }
             />
-          </Routes>
+            
+            {/* Profile */}
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            
+            {/* Attendance */}
+            <Route
+              path="/attendance"
+              element={
+                <PrivateRoute>
+                  <Attendance />
+                </PrivateRoute>
+              }
+            />          </Routes>
         </main>
       </div>
     </Router>

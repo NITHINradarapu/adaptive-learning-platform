@@ -137,10 +137,31 @@ const VideoPlayer: React.FC = () => {
         timeSpent,
         courseId: video?.course
       });
+      
+      alert('Video completed! Your progress has been saved.');
     } catch (error) {
       console.error('Error updating progress:', error);
     }
   };
+
+  // Save progress periodically while watching
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (isPlaying && videoRef.current) {
+        try {
+          await apiService.updateVideoProgress(videoId!, {
+            watchedDuration: Math.floor(currentTime),
+            completed: false
+          });
+        } catch (error) {
+          console.error('Error saving progress:', error);
+        }
+      }
+    }, 30000); // Save every 30 seconds
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying, currentTime, videoId, sessionStartTime]);
 
   const togglePlayPause = () => {
     if (videoRef.current) {

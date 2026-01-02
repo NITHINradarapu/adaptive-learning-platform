@@ -21,15 +21,26 @@ const LearnerDashboard: React.FC = () => {
   const loadDashboard = async () => {
     try {
       setLoading(true);
-      const [dashboardRes, recommendedRes, coursesRes] = await Promise.all([
+      const [dashboardRes, coursesRes] = await Promise.all([
         apiService.getDashboard(),
-        apiService.getRecommendedCourses(),
         apiService.getCourses()
       ]);
       
       setStats(dashboardRes.data.stats);
       setEnrolledCourses(dashboardRes.data.enrolledCourses);
-      setRecommendedCourses(recommendedRes.data.courses || []);
+      
+      // Get recommended courses using adaptive algorithm
+      try {
+        const recommendedRes = await apiService.getRecommendedCourses();
+        setRecommendedCourses(recommendedRes.data.courses || []);
+      } catch {
+        // Fallback to filtering by career goal if adaptive API fails
+        const filtered = (coursesRes.data || []).filter((course: Course) =>
+          course.careerGoals?.includes(user?.careerGoal || '')
+        ).slice(0, 6);
+        setRecommendedCourses(filtered);
+      }
+      
       setAllCourses(coursesRes.data || []);
     } catch (error) {
       console.error('Error loading dashboard:', error);
