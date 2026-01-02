@@ -33,6 +33,7 @@ const ManageModules: React.FC = () => {
   const [showVideoForm, setShowVideoForm] = useState(false);
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
   const [videos, setVideos] = useState<{ [moduleId: string]: Video[] }>({});
+  const [playingVideo, setPlayingVideo] = useState<Video | null>(null);
 
   const [moduleForm, setModuleForm] = useState({
     title: '',
@@ -45,6 +46,7 @@ const ManageModules: React.FC = () => {
     title: '',
     description: '',
     videoUrl: '',
+    thumbnailUrl: '',
     duration: 0
   });
 
@@ -85,6 +87,33 @@ const ManageModules: React.FC = () => {
     }
   };
 
+  const handlePlayVideo = (video: Video) => {
+    setPlayingVideo(video);
+  };
+
+  const handleClosePlayer = () => {
+    setPlayingVideo(null);
+  };
+
+  const getEmbedUrl = (url: string) => {
+    // Convert YouTube URL to embed format
+    if (url.includes('youtube.com/watch')) {
+      const videoId = new URL(url).searchParams.get('v');
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    if (url.includes('youtu.be/')) {
+      const videoId = url.split('youtu.be/')[1].split('?')[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    // Convert Vimeo URL to embed format
+    if (url.includes('vimeo.com/')) {
+      const videoId = url.split('vimeo.com/')[1].split('?')[0];
+      return `https://player.vimeo.com/video/${videoId}`;
+    }
+    // Return original URL for direct video links
+    return url;
+  };
+
   const handleCreateModule = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -114,6 +143,7 @@ const ManageModules: React.FC = () => {
         title: '',
         description: '',
         videoUrl: '',
+        thumbnailUrl: '',
         duration: 0
       });
       await loadVideos(selectedModule);
@@ -299,6 +329,15 @@ const ManageModules: React.FC = () => {
                       />
                     </div>
                     <div className="form-group">
+                      <label>Thumbnail URL (optional)</label>
+                      <input
+                        type="url"
+                        value={videoForm.thumbnailUrl}
+                        onChange={(e) => setVideoForm({ ...videoForm, thumbnailUrl: e.target.value })}
+                        placeholder="https://example.com/thumbnail.jpg"
+                      />
+                    </div>
+                    <div className="form-group">
                       <label>Duration (seconds)</label>
                       <input
                         type="number"
@@ -321,12 +360,13 @@ const ManageModules: React.FC = () => {
                 {videos[module._id]?.length > 0 ? (
                   videos[module._id].map((video) => (
                     <div key={video._id} className="video-item">
-                      <div className="video-info">
+                      <div className="video-info" onClick={() => handlePlayVideo(video)} style={{ cursor: 'pointer' }}>
                         <strong>{video.order}. {video.title}</strong>
                         <p>{video.description}</p>
                         <span className="video-meta">
                           {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
                         </span>
+                        <small style={{ color: '#666', marginTop: '5px', display: 'block' }}>▶ Click to play</small>
                       </div>
                       <button
                         className="btn-danger btn-sm"
@@ -349,6 +389,41 @@ const ManageModules: React.FC = () => {
           ))
         )}
       </div>
+
+      {playingVideo && (
+        <div className="video-modal" onClick={handleClosePlayer}>
+          <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="video-modal-header">
+              <h3>{playingVideo.title}</h3>
+              <button className="close-btn" onClick={handleClosePlayer}>×</button>
+            </div>
+            <div className="video-player-container">
+              {playingVideo.videoUrl.includes('youtube.com') || playingVideo.videoUrl.includes('youtu.be') || playingVideo.videoUrl.includes('vimeo.com') ? (
+                <iframe
+                  src={getEmbedUrl(playingVideo.videoUrl)}
+                  title={playingVideo.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{ width: '100%', height: '500px' }}
+                />
+              ) : (
+                <video
+                  src={playingVideo.videoUrl}
+                  controls
+                  autoPlay
+                  style={{ width: '100%', maxHeight: '500px' }}
+                >
+                  Your browser does not support the video tag.
+                </video>
+              )}
+            </div>
+            <div className="video-modal-description">
+              <p>{playingVideo.description}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
