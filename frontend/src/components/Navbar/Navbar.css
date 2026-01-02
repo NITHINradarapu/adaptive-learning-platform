@@ -47,6 +47,9 @@
   color: #4a5568;
   font-weight: 600;
   transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .nav-link:hover {
@@ -86,6 +89,16 @@
 
 .user-icon {
   color: #667eea;
+}
+
+.user-role {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  font-weight: 700;
 }
 
 .logout-btn {

@@ -221,6 +221,61 @@ export const enrollCourse = async (req: Request, res: Response): Promise<void> =
 };
 
 /**
+ * @desc    Unenroll from a course
+ * @route   DELETE /api/courses/:id/enroll
+ * @access  Private
+ */
+export const unenrollCourse = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    const courseId = req.params.id;
+    
+    // Check if course exists
+    const course = await Course.findById(courseId);
+    if (!course) {
+      res.status(404).json({
+        success: false,
+        message: 'Course not found'
+      });
+      return;
+    }
+    
+    // Check if enrolled
+    const existingProgress = await LearningProgress.findOne({
+      user: userId,
+      course: courseId
+    });
+    
+    if (!existingProgress) {
+      res.status(400).json({
+        success: false,
+        message: 'Not enrolled in this course'
+      });
+      return;
+    }
+    
+    // Delete progress record
+    await LearningProgress.findByIdAndDelete(existingProgress._id);
+    
+    // Update course enrollment count
+    if (course.enrolledStudents > 0) {
+      course.enrolledStudents -= 1;
+      await course.save();
+    }
+    
+    res.status(200).json({
+      success: true,
+      message: 'Successfully unenrolled from course'
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error unenrolling from course'
+    });
+  }
+};
+
+/**
  * @desc    Get recommended courses based on adaptive learning
  * @route   GET /api/courses/recommended
  * @access  Private
@@ -279,13 +334,37 @@ export const deleteCourse = async (req: Request, res: Response): Promise<void> =
     
     // Delete associated learning progress records
     await LearningProgress.deleteMany({ course: req.params.id });
+
+    // Import Module and Video models at runtime to avoid circular dependencies
+    const Module = (await import('../models/Module')).default;
+    const Video = (await import('../models/Video')).default;
+    const InteractiveQuestion = (await import('../models/InteractiveQuestion')).default;
+    const CheckpointResponse = (await import('../models/CheckpointResponse')).default;
+
+    // Get all modules for this course
+    const modules = await Module.find({ course: req.params.id });
+    const moduleIds = modules.map(m => m._id);
+
+    // Get all videos for these modules
+    const videos = await Video.find({ module: { $in: moduleIds } });
+    const videoIds = videos.map(v => v._id);
+
+    // Delete all questions and checkpoint responses for these videos
+    await InteractiveQuestion.deleteMany({ video: { $in: videoIds } });
+    await CheckpointResponse.deleteMany({ video: { $in: videoIds } });
+
+    // Delete all videos
+    await Video.deleteMany({ module: { $in: moduleIds } });
+
+    // Delete all modules
+    await Module.deleteMany({ course: req.params.id });
     
     // Delete the course
     await Course.findByIdAndDelete(req.params.id);
     
     res.status(200).json({
       success: true,
-      message: 'Course deleted successfully'
+      message: 'Course and all associated content deleted successfully'
     });
   } catch (error: any) {
     res.status(500).json({

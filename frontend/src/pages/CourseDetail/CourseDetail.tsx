@@ -41,6 +41,24 @@ const CourseDetail: React.FC = () => {
     }
   };
 
+  const handleUnenroll = async () => {
+    if (!window.confirm(`Are you sure you want to unenroll from "${course.title}"? Your progress will be lost.`)) {
+      return;
+    }
+
+    try {
+      setEnrolling(true);
+      await apiService.unenrollCourse(courseId!);
+      await loadCourseDetails(); // Reload to update enrollment status
+      alert('Successfully unenrolled from the course.');
+    } catch (error) {
+      console.error('Error unenrolling:', error);
+      alert('Failed to unenroll from course');
+    } finally {
+      setEnrolling(false);
+    }
+  };
+
   if (loading) {
     return <div className="loading-container">Loading course details...</div>;
   }
@@ -103,19 +121,28 @@ const CourseDetail: React.FC = () => {
                 <div className="enrolled-badge-large">
                   ✓ Enrolled - {Math.round(course.progress || 0)}% Complete
                 </div>
-                <button 
-                  className="btn-primary"
-                  onClick={() => {
-                    // Navigate to first video if available
-                    if (course.modules && course.modules[0]?.videos && course.modules[0].videos[0]) {
-                      navigate(`/video/${course.modules[0].videos[0]._id}`);
-                    } else {
-                      alert('No videos available yet');
-                    }
-                  }}
-                >
-                  Continue Learning
-                </button>
+                <div className="action-buttons">
+                  <button 
+                    className="btn-primary"
+                    onClick={() => {
+                      // Navigate to first video if available
+                      if (course.modules && course.modules[0]?.videos && course.modules[0].videos[0]) {
+                        navigate(`/video/${course.modules[0].videos[0]._id}`);
+                      } else {
+                        alert('No videos available yet');
+                      }
+                    }}
+                  >
+                    Continue Learning
+                  </button>
+                  <button 
+                    className="btn-unenroll-large"
+                    onClick={handleUnenroll}
+                    disabled={enrolling}
+                  >
+                    {enrolling ? 'Unenrolling...' : 'Unenroll'}
+                  </button>
+                </div>
               </div>
             ) : (
               <button 

@@ -51,6 +51,11 @@ class ApiService {
     return response.data;
   }
 
+  async logout() {
+    const response = await this.api.post('/auth/logout');
+    return response.data;
+  }
+
   async getMe() {
     const response = await this.api.get('/auth/me');
     return response.data;
@@ -82,6 +87,11 @@ class ApiService {
     return response.data;
   }
 
+  async unenrollCourse(courseId: string) {
+    const response = await this.api.delete(`/courses/${courseId}/enroll`);
+    return response.data;
+  }
+
   async createCourse(data: any) {
     const response = await this.api.post('/courses', data);
     return response.data;
@@ -97,9 +107,55 @@ class ApiService {
     return response.data;
   }
 
+  // Module endpoints
+  async getCourseModules(courseId: string) {
+    const response = await this.api.get(`/courses/${courseId}/modules`);
+    return response.data;
+  }
+
+  async getModule(moduleId: string) {
+    const response = await this.api.get(`/modules/${moduleId}`);
+    return response.data;
+  }
+
+  async createModule(courseId: string, data: any) {
+    const response = await this.api.post(`/courses/${courseId}/modules`, data);
+    return response.data;
+  }
+
+  async updateModule(moduleId: string, data: any) {
+    const response = await this.api.put(`/modules/${moduleId}`, data);
+    return response.data;
+  }
+
+  async deleteModule(moduleId: string) {
+    const response = await this.api.delete(`/modules/${moduleId}`);
+    return response.data;
+  }
+
   // Video endpoints
+  async getModuleVideos(moduleId: string) {
+    const response = await this.api.get(`/modules/${moduleId}/videos`);
+    return response.data;
+  }
+
   async getVideo(id: string) {
     const response = await this.api.get(`/videos/${id}`);
+    return response.data;
+  }
+
+  async createVideo(moduleId: string, data: any) {
+    const response = await this.api.post(`/modules/${moduleId}/videos`, data);
+    return response.data;
+  }
+
+  async updateVideo(videoId: string, data: any) {
+    const response = await this.api.put(`/videos/${videoId}`, data);
+    return response.data;
+  }
+
+  async deleteVideo(videoId: string) {
+    const response = await this.api.delete(`/videos/${videoId}`);
     return response.data;
   }
 

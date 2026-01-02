@@ -5,11 +5,13 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import connectDB from './config/database';
 import config from './config/config';
+import passportConfig from './config/passport';
 import { errorHandler, notFound } from './middleware/errorHandler';
 
 // Import routes
 import authRoutes from './routes/authRoutes';
 import courseRoutes from './routes/courseRoutes';
+import moduleRoutes from './routes/moduleRoutes';
 import videoRoutes from './routes/videoRoutes';
 import progressRoutes from './routes/progressRoutes';
 import attendanceRoutes from './routes/attendanceRoutes';
@@ -29,6 +31,9 @@ app.use(cors()); // Enable CORS
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
+// Initialize Passport
+app.use(passportConfig.initialize());
+
 // Logging
 if (config.nodeEnv === 'development') {
   app.use(morgan('dev'));
@@ -46,6 +51,7 @@ app.get('/health', (_req: Request, res: Response) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
+app.use('/api/modules', moduleRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/attendance', attendanceRoutes);
@@ -59,6 +65,7 @@ app.get('/', (_req: Request, res: Response) => {
     endpoints: {
       health: '/health',
       auth: '/api/auth',
+      modules: '/api/modules',
       courses: '/api/courses',
       videos: '/api/videos',
       progress: '/api/progress',

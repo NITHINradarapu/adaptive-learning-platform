@@ -1,61 +1,66 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken, JWTPayload } from '../utils/jwt';
+import passport from 'passport';
+import { IUser } from '../models/User';
 
 // Extend Express Request interface to include user
 declare global {
   namespace Express {
-    interface Request {
-      user?: JWTPayload;
-    }
+    interface User extends IUser {}
   }
 }
 
-export const authenticate = async (
+type AuthUser = {
+  id: string;
+  email: string;
+  role: string;
+};
+
+/**
+ * Passport JWT Authentication Middleware
+ * Protects routes by verifying JWT tokens
+ */
+export const authenticate = (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
-  try {
-    // Get token from header
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      res.status(401).json({
+): void => {
+  passport.authenticate('jwt', { session: false }, (err: any, user: any, info: any) => {
+    if (err) {
+      res.status(500).json({
         success: false,
-        message: 'No token provided. Please authenticate.'
+        message: 'Authentication error'
       });
       return;
     }
     
-    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-    
-    try {
-      // Verify token
-      const decoded = verifyToken(token);
-      
-      // Attach user to request
-      req.user = decoded;
-      
-      next();
-    } catch (error) {
+    if (!user) {
       res.status(401).json({
         success: false,
-        message: 'Invalid or expired token'
+        message: info?.message || 'Invalid or expired token'
       });
       return;
     }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Authentication error'
-    });
-    return;
-  }
+    
+    // Attach user to request with the expected format
+    (req as any).user = {
+      id: user._id.toString(),
+      email: user.email,
+      role: user.role
+    };
+    
+    next();
+  })(req, res, next);
 };
 
+/**
+ * Role-based Authorization Middleware
+ * Checks if authenticated user has required role
+ */
 export const authorize = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    if (!req.user) {
+    const user = (req as any).user as AuthUser | undefined;
+    
+    if (!user) {
       res.status(401).json({
         success: false,
         message: 'Not authenticated'
@@ -63,7 +68,7 @@ export const authorize = (...roles: string[]) => {
       return;
     }
     
-    if (!roles.includes(req.user.role)) {
+    if (!roles.includes(user.role)) {
       res.status(403).json({
         success: false,
         message: 'Not authorized to access this resource'

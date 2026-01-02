@@ -1,35 +1,36 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import passport from 'passport';
 import User from '../models/User';
 import { generateToken } from '../utils/jwt';
 
+type AuthUser = {
+  id: string;
+  email: string;
+  role: string;
+};
+
 /**
- * @desc    Register a new user
+ * @desc    Register a new user using Passport
  * @route   POST /api/auth/register
  * @access  Public
  */
-export const register = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { name, email, password, role, learnerBackground, careerGoal } = req.body;
-    
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      res.status(400).json({
+export const register = (req: Request, res: Response, next: NextFunction): void => {
+  passport.authenticate('local-register', { session: false }, (err: any, user: any, info: any) => {
+    if (err) {
+      res.status(500).json({
         success: false,
-        message: 'User already exists with this email'
+        message: err.message || 'Error registering user'
       });
       return;
     }
     
-    // Create user
-    const user = await User.create({
-      name,
-      email,
-      password,
-      role: role || 'student',
-      learnerBackground: learnerBackground || 'beginner',
-      careerGoal: careerGoal || 'Other'
-    });
+    if (!user) {
+      res.status(400).json({
+        success: false,
+        message: info?.message || 'Registration failed'
+      });
+      return;
+    }
     
     // Generate token
     const token = generateToken({
@@ -53,50 +54,37 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         token
       }
     });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Error registering user'
-    });
-  }
+  })(req, res, next);
 };
 
 /**
- * @desc    Login user
+ * @desc    Login user using Passport
  * @route   POST /api/auth/login
  * @access  Public
  */
-export const login = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { email, password } = req.body;
-    
-    // Validate input
-    if (!email || !password) {
-      res.status(400).json({
+export const login = (req: Request, res: Response, next: NextFunction): void => {
+  // Validate input
+  if (!req.body.email || !req.body.password) {
+    res.status(400).json({
+      success: false,
+      message: 'Please provide email and password'
+    });
+    return;
+  }
+  
+  passport.authenticate('local-login', { session: false }, (err: any, user: any, info: any) => {
+    if (err) {
+      res.status(500).json({
         success: false,
-        message: 'Please provide email and password'
+        message: err.message || 'Error logging in'
       });
       return;
     }
-    
-    // Find user and include password field
-    const user = await User.findOne({ email }).select('+password');
     
     if (!user) {
       res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
-      });
-      return;
-    }
-    
-    // Check password
-    const isPasswordMatch = await user.comparePassword(password);
-    
-    if (!isPasswordMatch) {
-      res.status(401).json({
-        success: false,
-        message: 'Invalid credentials'
+        message: info?.message || 'Invalid credentials'
       });
       return;
     }
@@ -125,12 +113,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         token
       }
     });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Error logging in'
-    });
-  }
+  })(req, res, next);
 };
 
 /**
@@ -140,7 +123,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
  */
 export const getMe = async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await User.findById(req.user?.id);
+    const authUser = (req as any).user as AuthUser | undefined;
+    const user = await User.findById(authUser?.id);
     
     if (!user) {
       res.status(404).json({
@@ -176,15 +160,30 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
 };
 
 /**
+ * @desc    Logout user
+ * @route   POST /api/auth/logout
+ * @access  Private
+ */
+export const logout = (req: Request, res: Response): void => {
+  // With JWT, logout is handled client-side by removing the token
+  // Optionally, you can implement token blacklisting here
+  res.status(200).json({
+    success: true,
+    message: 'Logged out successfully'
+  });
+};
+
+/**
  * @desc    Update user profile
  * @route   PUT /api/auth/profile
  * @access  Private
  */
 export const updateProfile = async (req: Request, res: Response): Promise<void> => {
   try {
+    const authUser = (req as any).user as AuthUser | undefined;
     const { name, learnerBackground, careerGoal } = req.body;
     
-    const user = await User.findById(req.user?.id);
+    const user = await User.findById(authUser?.id);
     
     if (!user) {
       res.status(404).json({

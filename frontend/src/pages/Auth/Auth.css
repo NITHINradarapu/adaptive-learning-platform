@@ -126,6 +126,21 @@
   font-size: 14px;
 }
 
+.demo-section {
+  margin-bottom: 12px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #667eea;
+}
+
+.demo-label {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
 .demo-info strong {
   color: #667eea;
   font-weight: 600;

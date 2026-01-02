@@ -1,8 +1,35 @@
 import { Request, Response } from 'express';
 import Video from '../models/Video';
+import Module from '../models/Module';
+import Course from '../models/Course';
 import InteractiveQuestion from '../models/InteractiveQuestion';
 import CheckpointResponse from '../models/CheckpointResponse';
 import LearningProgress from '../models/LearningProgress';
+
+/**
+ * @desc    Get all videos for a module
+ * @route   GET /api/modules/:moduleId/videos
+ * @access  Private
+ */
+export const getModuleVideos = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { moduleId } = req.params;
+
+    const videos = await Video.find({ module: moduleId })
+      .sort({ order: 1 });
+
+    res.status(200).json({
+      success: true,
+      count: videos.length,
+      data: videos
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error fetching videos'
+    });
+  }
+};
 
 /**
  * @desc    Get video details
@@ -245,6 +272,192 @@ export const createQuestion = async (req: Request, res: Response): Promise<void>
     res.status(500).json({
       success: false,
       message: error.message || 'Error creating question'
+    });
+  }
+};
+
+/**
+ * @desc    Create new video
+ * @route   POST /api/modules/:moduleId/videos
+ * @access  Private (Instructor/Admin only)
+ */
+export const createVideo = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { moduleId } = req.params;
+
+    // Check if module exists
+    const module = await Module.findById(moduleId).populate('course');
+    if (!module) {
+      res.status(404).json({
+        success: false,
+        message: 'Module not found'
+      });
+      return;
+    }
+
+    // Check authorization
+    const course = await Course.findById(module.course);
+    if (!course) {
+      res.status(404).json({
+        success: false,
+        message: 'Associated course not found'
+      });
+      return;
+    }
+
+    if (course.instructor.toString() !== req.user?.id && req.user?.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        message: 'Not authorized to add videos to this module'
+      });
+      return;
+    }
+
+    // Get the next order number
+    const maxOrderVideo = await Video.findOne({ module: moduleId })
+      .sort({ order: -1 })
+      .select('order');
+    
+    const nextOrder = maxOrderVideo ? maxOrderVideo.order + 1 : 1;
+
+    const videoData = {
+      ...req.body,
+      module: moduleId,
+      course: module.course,
+      order: req.body.order || nextOrder
+    };
+
+    const video = await Video.create(videoData);
+
+    // Update course video count
+    course.totalVideos = (course.totalVideos || 0) + 1;
+    await course.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Video created successfully',
+      data: video
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error creating video'
+    });
+  }
+};
+
+/**
+ * @desc    Update video
+ * @route   PUT /api/videos/:id
+ * @access  Private (Instructor/Admin only)
+ */
+export const updateVideo = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const video = await Video.findById(req.params.id).populate('course');
+
+    if (!video) {
+      res.status(404).json({
+        success: false,
+        message: 'Video not found'
+      });
+      return;
+    }
+
+    // Check authorization
+    const course = await Course.findById(video.course);
+    if (!course) {
+      res.status(404).json({
+        success: false,
+        message: 'Associated course not found'
+      });
+      return;
+    }
+
+    if (course.instructor.toString() !== req.user?.id && req.user?.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        message: 'Not authorized to update this video'
+      });
+      return;
+    }
+
+    const updatedVideo = await Video.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Video updated successfully',
+      data: updatedVideo
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error updating video'
+    });
+  }
+};
+
+/**
+ * @desc    Delete video
+ * @route   DELETE /api/videos/:id
+ * @access  Private (Instructor/Admin only)
+ */
+export const deleteVideo = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const video = await Video.findById(req.params.id);
+
+    if (!video) {
+      res.status(404).json({
+        success: false,
+        message: 'Video not found'
+      });
+      return;
+    }
+
+    // Check authorization
+    const course = await Course.findById(video.course);
+    if (!course) {
+      res.status(404).json({
+        success: false,
+        message: 'Associated course not found'
+      });
+      return;
+    }
+
+    if (course.instructor.toString() !== req.user?.id && req.user?.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        message: 'Not authorized to delete this video'
+      });
+      return;
+    }
+
+    // Delete all questions associated with this video
+    await InteractiveQuestion.deleteMany({ video: req.params.id });
+
+    // Delete all checkpoint responses
+    await CheckpointResponse.deleteMany({ video: req.params.id });
+
+    // Delete the video
+    await Video.findByIdAndDelete(req.params.id);
+
+    // Update course video count
+    if (course.totalVideos > 0) {
+      course.totalVideos -= 1;
+      await course.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Video and associated data deleted successfully'
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error deleting video'
     });
   }
 };

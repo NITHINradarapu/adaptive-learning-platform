@@ -5,8 +5,9 @@ import Navbar from './components/Navbar/Navbar';
 import Home from './pages/Home/Home';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
-import Dashboard from './pages/Dashboard/Dashboard';
-import VideoPlayer from './components/VideoPlayer/VideoPlayer';
+import LearnerDashboard from './pages/Learner/LearnerDashboard';
+import TeacherDashboard from './pages/Teacher/TeacherDashboard';
+import ManageModules from './pages/Teacher/ManageModules';
 import AdminCourses from './pages/Admin/AdminCourses';
 import ManageCourses from './pages/Admin/ManageCourses';
 import EditCourse from './pages/Admin/EditCourse';
@@ -18,8 +19,26 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   return isAuthenticated ? <>{children}</> : <Navigate to="/" />;
 };
 
+const TeacherRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, user } = useAuthStore();
+  if (!isAuthenticated) return <Navigate to="/" />;
+  if (user?.role !== 'instructor' && user?.role !== 'admin') {
+    return <Navigate to="/learner/dashboard" />;
+  }
+  return <>{children}</>;
+};
+
 const App: React.FC = () => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
+
+  // Determine dashboard route based on role
+  const getDashboardRoute = () => {
+    if (!user) return '/';
+    if (user.role === 'instructor' || user.role === 'admin') {
+      return '/teacher/dashboard';
+    }
+    return '/learner/dashboard';
+  };
 
   return (
     <Router>
@@ -28,54 +47,77 @@ const App: React.FC = () => {
         
         <main className="main-content">
           <Routes>
-            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Home />} />
-            <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
-            <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />} />
+            <Route path="/" element={isAuthenticated ? <Navigate to={getDashboardRoute()} /> : <Home />} />
+            <Route path="/login" element={isAuthenticated ? <Navigate to={getDashboardRoute()} /> : <Login />} />
+            <Route path="/register" element={isAuthenticated ? <Navigate to={getDashboardRoute()} /> : <Register />} />
             
+            {/* Old dashboard route - redirect based on role */}
             <Route
               path="/dashboard"
+              element={<Navigate to={getDashboardRoute()} replace />}
+            />
+            
+            {/* Learner Dashboard */}
+            <Route
+              path="/learner/dashboard"
               element={
                 <PrivateRoute>
-                  <Dashboard />
+                  <LearnerDashboard />
                 </PrivateRoute>
               }
             />
             
+            {/* Teacher Dashboard */}
             <Route
-              path="/video/:videoId"
+              path="/teacher/dashboard"
               element={
-                <PrivateRoute>
-                  <VideoPlayer />
-                </PrivateRoute>
+                <TeacherRoute>
+                  <TeacherDashboard />
+                </TeacherRoute>
               }
             />
             
+            {/* Teacher Routes */}
             <Route
-              path="/admin/courses"
+              path="/teacher/create-course"
               element={
-                <PrivateRoute>
+                <TeacherRoute>
                   <AdminCourses />
-                </PrivateRoute>
+                </TeacherRoute>
               }
             />
             
             <Route
-              path="/admin/manage-courses"
+              path="/teacher/manage-courses"
               element={
-                <PrivateRoute>
+                <TeacherRoute>
                   <ManageCourses />
-                </PrivateRoute>
+                </TeacherRoute>
               }
             />
             
             <Route
-              path="/admin/courses/edit/:courseId"
+              path="/teacher/edit-course/:courseId"
               element={
-                <PrivateRoute>
+                <TeacherRoute>
                   <EditCourse />
-                </PrivateRoute>
+                </TeacherRoute>
               }
             />
+            
+            <Route
+              path="/teacher/courses/:courseId/modules"
+              element={
+                <TeacherRoute>
+                  <ManageModules />
+                </TeacherRoute>
+              }
+            />
+            
+            {/* Legacy admin routes - redirect to teacher routes */}
+            <Route path="/admin/courses" element={<Navigate to="/teacher/create-course" replace />} />
+            <Route path="/admin/manage-courses" element={<Navigate to="/teacher/manage-courses" replace />} />
+            <Route path="/admin/courses/edit/:courseId" element={<Navigate to="/teacher/edit-course/:courseId" replace />} />
             
             <Route
               path="/course/:courseId"

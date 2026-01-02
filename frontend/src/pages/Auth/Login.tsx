@@ -29,8 +29,16 @@ const Login: React.FC = () => {
         
         <div className="demo-credentials">
           <p className="demo-title">🎯 Demo Credentials:</p>
-          <p className="demo-info"><strong>Email:</strong> test@gmail.com</p>
-          <p className="demo-info"><strong>Password:</strong> password123</p>
+          <div className="demo-section">
+            <p className="demo-label">Student Account:</p>
+            <p className="demo-info"><strong>Email:</strong> student@test.com</p>
+            <p className="demo-info"><strong>Password:</strong> password123</p>
+          </div>
+          <div className="demo-section">
+            <p className="demo-label">Instructor Account:</p>
+            <p className="demo-info"><strong>Email:</strong> teacher@test.com</p>
+            <p className="demo-info"><strong>Password:</strong> password123</p>
+          </div>
         </div>
         
         <form onSubmit={handleSubmit} className="auth-form">

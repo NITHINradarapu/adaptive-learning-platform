@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { apiService } from '../../services/api';
 import { DashboardStats, Course } from '../../types';
-import { FaFire, FaTrophy, FaBook, FaCheckCircle } from 'react-icons/fa';
-import './Dashboard.css';
+import { FaFire, FaTrophy, FaBook, FaCheckCircle, FaSearch, FaStar } from 'react-icons/fa';
+import './LearnerDashboard.css';
 
-const Dashboard: React.FC = () => {
+const LearnerDashboard: React.FC = () => {
   const { user } = useAuthStore();
-  const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([]);
   const [allCourses, setAllCourses] = useState<Course[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,17 +38,53 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleEnroll = async (courseId: string) => {
+    try {
+      await apiService.enrollCourse(courseId);
+      loadDashboard(); // Refresh data
+    } catch (error) {
+      console.error('Error enrolling:', error);
+      alert('Failed to enroll. You may already be enrolled in this course.');
+    }
+  };
+
+  const handleUnenroll = async (courseId: string, courseName: string) => {
+    if (!window.confirm(`Are you sure you want to unenroll from "${courseName}"? Your progress will be lost.`)) {
+      return;
+    }
+
+    try {
+      await apiService.unenrollCourse(courseId);
+      loadDashboard(); // Refresh data
+      alert('Successfully unenrolled from the course.');
+    } catch (error) {
+      console.error('Error unenrolling:', error);
+      alert('Failed to unenroll from the course.');
+    }
+  };
+
+  const filteredCourses = allCourses.filter(course =>
+    course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    course.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  const unenrolledCourses = filteredCourses.filter(course => 
+    !enrolledCourses.some(enrolled => enrolled.course._id === course._id)
+  );
+
   if (loading) {
-    return <div className="loading-container">Loading your dashboard...</div>;
+    return <div className="loading-container">Loading your learning dashboard...</div>;
   }
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-header">
+    <div className="learner-dashboard">
+      {/* Header */}
+      <div className="learner-header">
         <div>
           <h1>Welcome back, {user?.name}!</h1>
           <p className="subtitle">
-            {user?.learnerBackground} learner | Goal: {user?.careerGoal}
+            {user?.learnerBackground} learner | Career Goal: {user?.careerGoal}
           </p>
         </div>
       </div>
@@ -107,31 +142,23 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Enrolled Courses */}
+      {/* My Enrolled Courses */}
       <section className="dashboard-section">
-        <h2>Your Courses</h2>
+        <h2>My Learning Journey</h2>
         {enrolledCourses.length === 0 ? (
           <div className="empty-state">
+            <FaBook className="empty-icon" />
             <p>You haven't enrolled in any courses yet.</p>
-            <button 
-              className="btn-primary"
-              onClick={() => navigate('/courses')}
-            >
-              Browse Courses
-            </button>
+            <p className="empty-hint">Browse available courses below to start learning!</p>
           </div>
         ) : (
           <div className="courses-grid">
             {enrolledCourses.map((enrolled) => (
               <div 
                 key={enrolled.course._id} 
-                className="course-card"
+                className="course-card enrolled"
               >
-                <div 
-                  className="course-thumbnail course-clickable"
-                  onClick={() => window.open(`/course/${enrolled.course._id}`, '_blank')}
-                  style={{ cursor: 'pointer' }}
-                >
+                <div className="course-thumbnail">
                   {enrolled.course.thumbnailUrl ? (
                     <img src={enrolled.course.thumbnailUrl} alt={enrolled.course.title} />
                   ) : (
@@ -139,28 +166,36 @@ const Dashboard: React.FC = () => {
                       {enrolled.course.title.charAt(0)}
                     </div>
                   )}
+                  <div className="course-badge">{enrolled.progress}% Complete</div>
                 </div>
                 <div className="course-info">
-                  <h3 
-                    className="course-title-clickable"
-                    onClick={() => window.open(`/course/${enrolled.course._id}`, '_blank')}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {enrolled.course.title}
-                  </h3>
-                  <div className="course-meta">
-                    <span className={`badge ${enrolled.course.difficultyLevel}`}>
-                      {enrolled.course.difficultyLevel}
-                    </span>
-                    <span className="progress-badge">
-                      {Math.round(enrolled.progress)}% complete
-                    </span>
-                  </div>
+                  <h3>{enrolled.course.title}</h3>
+                  <p className="course-meta">
+                    <span className="difficulty">{enrolled.course.difficultyLevel}</span>
+                    <span className="duration">{enrolled.course.duration} mins</span>
+                  </p>
                   <div className="progress-bar">
                     <div 
                       className="progress-fill" 
                       style={{ width: `${enrolled.progress}%` }}
-                    />
+                    ></div>
+                  </div>
+                  <div className="course-actions">
+                    <button 
+                      className="btn-continue"
+                      onClick={() => window.open(`/course/${enrolled.course._id}`, '_blank')}
+                    >
+                      Continue Learning →
+                    </button>
+                    <button 
+                      className="btn-unenroll"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleUnenroll(enrolled.course._id, enrolled.course.title);
+                      }}
+                    >
+                      Unenroll
+                    </button>
                   </div>
                 </div>
               </div>
@@ -173,20 +208,11 @@ const Dashboard: React.FC = () => {
       {recommendedCourses.length > 0 && (
         <section className="dashboard-section">
           <h2>Recommended for You</h2>
-          <p className="section-subtitle">
-            Based on your profile: {user?.learnerBackground} level, {user?.careerGoal}
-          </p>
+          <p className="section-subtitle">Based on your goals and learning style</p>
           <div className="courses-grid">
             {recommendedCourses.slice(0, 3).map((course) => (
-              <div 
-                key={course._id} 
-                className="course-card recommended"
-              >
-                <div 
-                  className="course-thumbnail course-clickable"
-                  onClick={() => window.open(`/course/${course._id}`, '_blank')}
-                  style={{ cursor: 'pointer' }}
-                >
+              <div key={course._id} className="course-card recommended">
+                <div className="course-thumbnail">
                   {course.thumbnailUrl ? (
                     <img src={course.thumbnailUrl} alt={course.title} />
                   ) : (
@@ -194,33 +220,20 @@ const Dashboard: React.FC = () => {
                       {course.title.charAt(0)}
                     </div>
                   )}
+                  <div className="recommended-badge">Recommended</div>
                 </div>
                 <div className="course-info">
-                  <h3 
-                    className="course-title-clickable"
-                    onClick={() => window.open(`/course/${course._id}`, '_blank')}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {course.title}
-                  </h3>
-                  <p className="course-description">{course.description}</p>
-                  <div className="course-meta">
-                    <span className={`badge ${course.difficultyLevel}`}>
-                      {course.difficultyLevel}
+                  <h3>{course.title}</h3>
+                  <p className="course-description">{course.description.substring(0, 100)}...</p>
+                  <p className="course-meta">
+                    <span className="difficulty">{course.difficultyLevel}</span>
+                    <span className="rating">
+                      <FaStar /> {course.averageRating.toFixed(1)}
                     </span>
-                    <span>{course.duration} min</span>
-                  </div>
+                  </p>
                   <button 
                     className="btn-enroll"
-                    onClick={async (e) => {
-                      e.stopPropagation();
-                      try {
-                        await apiService.enrollCourse(course._id);
-                        loadDashboard(); // Reload to show enrolled course
-                      } catch (error) {
-                        console.error('Error enrolling:', error);
-                      }
-                    }}
+                    onClick={() => handleEnroll(course._id)}
                   >
                     Enroll Now
                   </button>
@@ -231,31 +244,28 @@ const Dashboard: React.FC = () => {
         </section>
       )}
 
-      {/* All Courses */}
+      {/* Browse All Courses */}
       <section className="dashboard-section">
-        <h2>All Available Courses</h2>
-        {allCourses.length === 0 ? (
-          <div className="empty-state">
-            <p>No courses available yet. Create your first course!</p>
-            <button 
-              className="btn-primary"
-              onClick={() => navigate('/admin/courses')}
-            >
-              Create Course
-            </button>
+        <div className="section-header">
+          <h2>Browse All Courses</h2>
+          <div className="search-box">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search courses..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
+        </div>
+        
+        {unenrolledCourses.length === 0 ? (
+          <p className="no-results">No courses found matching your search.</p>
         ) : (
           <div className="courses-grid">
-            {allCourses.map((course) => (
-              <div 
-                key={course._id} 
-                className="course-card"
-              >
-                <div 
-                  className="course-thumbnail course-clickable"
-                  onClick={() => window.open(`/course/${course._id}`, '_blank')}
-                  style={{ cursor: 'pointer' }}
-                >
+            {unenrolledCourses.map((course) => (
+              <div key={course._id} className="course-card">
+                <div className="course-thumbnail">
                   {course.thumbnailUrl ? (
                     <img src={course.thumbnailUrl} alt={course.title} />
                   ) : (
@@ -265,39 +275,26 @@ const Dashboard: React.FC = () => {
                   )}
                 </div>
                 <div className="course-info">
-                  <h3 
-                    className="course-title-clickable"
-                    onClick={() => window.open(`/course/${course._id}`, '_blank')}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {course.title}
-                  </h3>
-                  <p className="course-description">{course.description}</p>
-                  <div className="course-meta">
-                    <span className={`badge ${course.difficultyLevel}`}>
-                      {course.difficultyLevel}
-                    </span>
-                    <span>{course.duration} min</span>
-                  </div>
-                  {course.isEnrolled ? (
-                    <div className="enrolled-badge">
-                      ✓ Enrolled - {Math.round(course.progress || 0)}% complete
-                    </div>
-                  ) : (
+                  <h3>{course.title}</h3>
+                  <p className="course-description">{course.description.substring(0, 100)}...</p>
+                  <p className="course-meta">
+                    <span className="difficulty">{course.difficultyLevel}</span>
+                    <span className="students">{course.enrolledStudents} students</span>
+                  </p>
+                  <div className="course-actions">
                     <button 
                       className="btn-enroll"
-                      onClick={async () => {
-                        try {
-                          await apiService.enrollCourse(course._id);
-                          loadDashboard();
-                        } catch (error) {
-                          console.error('Error enrolling:', error);
-                        }
-                      }}
+                      onClick={() => handleEnroll(course._id)}
                     >
                       Enroll Now
                     </button>
-                  )}
+                    <button 
+                      className="btn-preview"
+                      onClick={() => window.open(`/course/${course._id}`, '_blank')}
+                    >
+                      Preview
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -308,4 +305,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default LearnerDashboard;

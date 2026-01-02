@@ -106,6 +106,20 @@ const Register: React.FC = () => {
           </div>
           
           <div className="form-group">
+            <label htmlFor="role">I am a</label>
+            <select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+            >
+              <option value="student">Student / Learner</option>
+              <option value="instructor">Teacher / Instructor</option>
+            </select>
+          </div>
+          
+          <div className="form-group">
             <label htmlFor="learnerBackground">Experience Level</label>
             <select
               id="learnerBackground"

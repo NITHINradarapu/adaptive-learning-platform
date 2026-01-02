@@ -77,6 +77,11 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        // Call logout API (optional - mainly for server-side cleanup)
+        apiService.logout().catch(() => {
+          // Ignore errors - logout locally anyway
+        });
+        
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         set({
