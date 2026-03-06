@@ -7,7 +7,8 @@ import {
   updateVideo,
   deleteVideo,
   submitCheckpoint,
-  createQuestion
+  createQuestion,
+  deleteQuestion
 } from '../controllers/videoController';
 import { authenticate, authorize } from '../middleware/auth';
 import { UserRole } from '../models/User';
@@ -19,6 +20,7 @@ router.put('/:id', authenticate, authorize(UserRole.INSTRUCTOR, UserRole.ADMIN),
 router.delete('/:id', authenticate, authorize(UserRole.INSTRUCTOR, UserRole.ADMIN), deleteVideo);
 router.get('/:id/questions', authenticate, getVideoQuestions);
 router.post('/:id/questions', authenticate, authorize(UserRole.INSTRUCTOR, UserRole.ADMIN), createQuestion);
+router.delete('/:id/questions/:questionId', authenticate, authorize(UserRole.INSTRUCTOR, UserRole.ADMIN), deleteQuestion);
 router.post('/:videoId/checkpoints/:questionId', authenticate, submitCheckpoint);
 
 export default router;

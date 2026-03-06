@@ -37,6 +37,12 @@ export interface IUser extends Document {
   totalCoursesCompleted?: number;
   currentStreak?: number;
   longestStreak?: number;
+  engagementScore?: number;
+  
+  // Risk status
+  isAtRisk?: boolean;
+  riskLevel?: 'low' | 'medium' | 'high';
+  lastRiskAssessment?: Date;
   
   createdAt: Date;
   updatedAt: Date;
@@ -96,6 +102,24 @@ const userSchema = new Schema<IUser>({
   longestStreak: {
     type: Number,
     default: 0
+  },
+  engagementScore: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 1
+  },
+  isAtRisk: {
+    type: Boolean,
+    default: false
+  },
+  riskLevel: {
+    type: String,
+    enum: ['low', 'medium', 'high'],
+    default: 'low'
+  },
+  lastRiskAssessment: {
+    type: Date
   }
 }, {
   timestamps: true

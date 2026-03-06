@@ -181,9 +181,10 @@ export const logout = (req: Request, res: Response): void => {
 export const updateProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     const authUser = (req as any).user as AuthUser | undefined;
-    const { name, learnerBackground, careerGoal } = req.body;
+    const { name, learnerBackground, careerGoal, currentPassword, newPassword } = req.body;
     
-    const user = await User.findById(authUser?.id);
+    // Use .select('+password') so comparePassword works when changing password
+    const user = await User.findById(authUser?.id).select('+password');
     
     if (!user) {
       res.status(404).json({
@@ -193,17 +194,47 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
       return;
     }
     
-    // Update fields
+    // Update basic fields
     if (name) user.name = name;
     if (learnerBackground) user.learnerBackground = learnerBackground;
     if (careerGoal) user.careerGoal = careerGoal;
+    
+    // Update password if provided
+    if (newPassword) {
+      if (!currentPassword) {
+        res.status(400).json({
+          success: false,
+          message: 'Current password is required to change password'
+        });
+        return;
+      }
+      
+      // Verify current password
+      const isMatch = await user.comparePassword(currentPassword);
+      if (!isMatch) {
+        res.status(401).json({
+          success: false,
+          message: 'Current password is incorrect'
+        });
+        return;
+      }
+      
+      user.password = newPassword;
+    }
     
     await user.save();
     
     res.status(200).json({
       success: true,
       message: 'Profile updated successfully',
-      data: { user }
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        learnerBackground: user.learnerBackground,
+        careerGoal: user.careerGoal
+      }
     });
   } catch (error: any) {
     res.status(500).json({

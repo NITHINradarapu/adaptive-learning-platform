@@ -62,8 +62,16 @@ const Profile: React.FC = () => {
       }
 
       const response = await apiService.updateProfile(updateData);
-      localStorage.setItem('user', JSON.stringify(response.data));
-      setSuccess('Profile updated successfully! Please refresh to see changes.');
+      
+      // Update auth store with new user data
+      try {
+        const { useAuthStore } = await import('../../store/authStore');
+        useAuthStore.getState().updateUser(updateData);
+      } catch {
+        // fallback — store update is best-effort
+      }
+      
+      setSuccess('Profile updated successfully!');
       
       // Clear password fields
       setFormData({
@@ -154,11 +162,9 @@ const Profile: React.FC = () => {
                   <option value="Software Developer">Software Developer</option>
                   <option value="Data Analyst">Data Analyst</option>
                   <option value="ML Engineer">ML Engineer</option>
-                  <option value="Full Stack Developer">Full Stack Developer</option>
-                  <option value="DevOps Engineer">DevOps Engineer</option>
-                  <option value="Cloud Architect">Cloud Architect</option>
-                  <option value="Cybersecurity Specialist">Cybersecurity Specialist</option>
-                  <option value="Product Manager">Product Manager</option>
+                  <option value="Web Developer">Web Developer</option>
+                  <option value="Teacher">Teacher</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
             </div>

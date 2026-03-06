@@ -248,6 +248,24 @@ export const createQuestion = async (req: Request, res: Response): Promise<void>
       });
       return;
     }
+
+    // Authorization check: only the course instructor or admin can add questions
+    const course = await Course.findById(video.course);
+    if (!course) {
+      res.status(404).json({
+        success: false,
+        message: 'Associated course not found'
+      });
+      return;
+    }
+
+    if (course.instructor.toString() !== req.user?.id && req.user?.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        message: 'Not authorized to add questions to this video'
+      });
+      return;
+    }
     
     const questionData = {
       ...req.body,
@@ -458,6 +476,77 @@ export const deleteVideo = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({
       success: false,
       message: error.message || 'Error deleting video'
+    });
+  }
+};
+
+/**
+ * @desc    Delete interactive question
+ * @route   DELETE /api/videos/:id/questions/:questionId
+ * @access  Private (Instructor/Admin only)
+ */
+export const deleteQuestion = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id: videoId, questionId } = req.params;
+
+    const video = await Video.findById(videoId);
+    if (!video) {
+      res.status(404).json({
+        success: false,
+        message: 'Video not found'
+      });
+      return;
+    }
+
+    // Authorization check
+    const course = await Course.findById(video.course);
+    if (!course) {
+      res.status(404).json({
+        success: false,
+        message: 'Associated course not found'
+      });
+      return;
+    }
+
+    if (course.instructor.toString() !== req.user?.id && req.user?.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        message: 'Not authorized to delete questions from this video'
+      });
+      return;
+    }
+
+    const question = await InteractiveQuestion.findById(questionId);
+    if (!question || question.video.toString() !== videoId) {
+      res.status(404).json({
+        success: false,
+        message: 'Question not found'
+      });
+      return;
+    }
+
+    // Delete associated checkpoint responses
+    await CheckpointResponse.deleteMany({ question: questionId });
+
+    // Delete the question
+    await InteractiveQuestion.findByIdAndDelete(questionId);
+
+    // Update video metadata
+    if (question.isRequired && video.requiredCheckpoints > 0) {
+      video.requiredCheckpoints -= 1;
+    }
+    const remainingQuestions = await InteractiveQuestion.countDocuments({ video: videoId });
+    video.hasInteractiveQuestions = remainingQuestions > 0;
+    await video.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Question deleted successfully'
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error deleting question'
     });
   }
 };

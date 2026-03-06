@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-import { FaGraduationCap, FaUser, FaSignOutAlt, FaPlus, FaCog, FaChalkboardTeacher, FaBook, FaCalendarCheck } from 'react-icons/fa';
+import { FaGraduationCap, FaUser, FaSignOutAlt, FaPlus, FaCog, FaChalkboardTeacher, FaBook, FaCalendarCheck, FaChartBar, FaBrain } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar: React.FC = () => {
@@ -40,6 +40,10 @@ const Navbar: React.FC = () => {
               <Link to="/teacher/create-course" className="nav-link nav-link-primary">
                 <FaPlus /> Create Course
               </Link>
+
+              <Link to="/teacher/analytics" className="nav-link">
+                <FaChartBar /> Analytics
+              </Link>
             </>
           ) : (
             // Learner menu
@@ -50,6 +54,10 @@ const Navbar: React.FC = () => {
               
               <Link to="/attendance" className="nav-link">
                 <FaCalendarCheck /> Attendance
+              </Link>
+
+              <Link to="/learner/reviews" className="nav-link">
+                <FaBrain /> Reviews
               </Link>
             </>
           )}

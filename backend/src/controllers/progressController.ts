@@ -175,10 +175,10 @@ export const updateVideoProgress = async (req: Request, res: Response): Promise<
     // Update last activity
     progress.lastActivityDate = new Date();
     
-    // Recalculate overall progress
-    const totalVideos = progress.videosProgress.length;
+    // Recalculate overall progress using actual total video count for the course
+    const totalCourseVideos = await Video.countDocuments({ course: video.course });
     const completedVideos = progress.videosProgress.filter(vp => vp.completed).length;
-    progress.overallProgress = totalVideos > 0 ? (completedVideos / totalVideos) * 100 : 0;
+    progress.overallProgress = totalCourseVideos > 0 ? (completedVideos / totalCourseVideos) * 100 : 0;
     
     // Update status
     if (progress.overallProgress === 100) {

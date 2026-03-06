@@ -103,7 +103,7 @@ const EditCourse: React.FC = () => {
       setSuccess('Course updated successfully!');
       
       setTimeout(() => {
-        navigate('/admin/manage-courses');
+        navigate('/teacher/manage-courses');
       }, 1500);
 
     } catch (err: any) {
@@ -121,7 +121,7 @@ const EditCourse: React.FC = () => {
     <div className="admin-courses-container">
       <div className="admin-courses-header">
         <h1>Edit Course</h1>
-        <button className="btn-back" onClick={() => navigate('/admin/manage-courses')}>
+        <button className="btn-back" onClick={() => navigate('/teacher/manage-courses')}>
           ← Back to Manage Courses
         </button>
       </div>
@@ -253,7 +253,7 @@ const EditCourse: React.FC = () => {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="btn-secondary" onClick={() => navigate('/admin/manage-courses')}>
+          <button type="button" className="btn-secondary" onClick={() => navigate('/teacher/manage-courses')}>
             Cancel
           </button>
           <button type="submit" className="btn-primary" disabled={saving}>

@@ -61,12 +61,12 @@ passport.use(
           return done(null, false, { message: 'Email already registered' });
         }
 
-        // Create new user
+        // Create new user (role is always 'student' to prevent privilege escalation)
         const user = await User.create({
           name: req.body.name,
           email,
           password,
-          role: req.body.role || 'student',
+          role: 'student',
           learnerBackground: req.body.learnerBackground || 'beginner',
           careerGoal: req.body.careerGoal || 'Other',
         });

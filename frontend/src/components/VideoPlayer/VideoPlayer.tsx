@@ -17,6 +17,7 @@ const VideoPlayer: React.FC = () => {
   const [duration, setDuration] = useState(0);
   const [completedCheckpoints, setCompletedCheckpoints] = useState<Set<string>>(new Set());
   const [sessionStartTime, setSessionStartTime] = useState<number>(Date.now());
+  const [sessionId] = useState<string>(`session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`);
 
   useEffect(() => {
     if (videoId) {
@@ -76,12 +77,33 @@ const VideoPlayer: React.FC = () => {
     }
   };
 
+  // Track engagement events
+  const trackEvent = async (eventType: string, timestamp: number, extra?: any) => {
+    if (!video) return;
+    try {
+      await apiService.trackEngagement({
+        videoId: video._id,
+        courseId: video.course,
+        moduleId: video.module,
+        eventType,
+        timestamp: Math.floor(timestamp),
+        duration: extra?.duration || 0,
+        metadata: extra?.metadata || {},
+        sessionId,
+      });
+    } catch (error) {
+      // Non-critical — don't block video playback
+    }
+  };
+
   const handlePlay = () => {
     setIsPlaying(true);
+    trackEvent('play', currentTime);
   };
 
   const handlePause = () => {
     setIsPlaying(false);
+    trackEvent('pause', currentTime);
   };
 
   const handleQuestionSubmit = async (result: CheckpointResponse) => {
@@ -121,7 +143,23 @@ const VideoPlayer: React.FC = () => {
 
   const handleVideoEnd = async () => {
     const watchedDuration = Math.floor(duration);
-    const timeSpent = Math.floor((Date.now() - sessionStartTime) / 1000 / 60); // minutes
+    const timeSpent = Math.floor((Date.now() - sessionStartTime) / 1000 / 60);
+    
+    // Track video completion event
+    trackEvent('complete', duration);
+
+    // Process RL interaction for completed topic
+    try {
+      await apiService.processRLInteraction({
+        courseId: video?.course,
+        topicCompleted: completedCheckpoints.size >= (video?.requiredCheckpoints || 0),
+        quizScore: completedCheckpoints.size > 0
+          ? Math.round((completedCheckpoints.size / (video?.requiredCheckpoints || 1)) * 100)
+          : undefined,
+      });
+    } catch (error) {
+      // Non-critical
+    } // minutes
     
     try {
       // Update progress
@@ -150,7 +188,7 @@ const VideoPlayer: React.FC = () => {
       if (isPlaying && videoRef.current) {
         try {
           await apiService.updateVideoProgress(videoId!, {
-            watchedDuration: Math.floor(currentTime),
+            watchedDuration: Math.floor(videoRef.current.currentTime),
             completed: false
           });
         } catch (error) {
@@ -161,7 +199,34 @@ const VideoPlayer: React.FC = () => {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlaying, currentTime, videoId, sessionStartTime]);
+  }, [isPlaying, videoId]);
+
+  // Track tab visibility changes (student switching tabs)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && isPlaying) {
+        trackEvent('tab_switch', currentTime);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying, currentTime, video]);
+
+  // Track drop-off when user leaves the page
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (video && currentTime < duration * 0.9) {
+        // Student leaving before 90% completion = drop-off
+        trackEvent('drop_off', currentTime, {
+          metadata: { dropOffTimestamp: currentTime },
+        });
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [video, currentTime, duration]);
 
   const togglePlayPause = () => {
     if (videoRef.current) {
@@ -176,8 +241,20 @@ const VideoPlayer: React.FC = () => {
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const time = parseFloat(e.target.value);
     if (videoRef.current) {
+      const seekFrom = currentTime;
       videoRef.current.currentTime = time;
       setCurrentTime(time);
+
+      // Track seek / replay
+      if (time < seekFrom) {
+        trackEvent('replay', time, {
+          metadata: { replaySegmentStart: time, replaySegmentEnd: seekFrom, seekFrom, seekTo: time },
+        });
+      } else {
+        trackEvent('seek', time, {
+          metadata: { seekFrom, seekTo: time },
+        });
+      }
     }
   };
 

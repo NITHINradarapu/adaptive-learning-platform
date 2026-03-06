@@ -46,9 +46,9 @@ const Attendance: React.FC = () => {
   const fetchAttendanceData = async () => {
     try {
       const response = await apiService.getAttendanceStatus();
-      if (response.data.success) {
-        setSummary(response.data.data.summary);
-        setRecords(response.data.data.records);
+      if (response.success) {
+        setSummary(response.data.summary);
+        setRecords(response.data.records);
       }
     } catch (error) {
       console.error('Error fetching attendance:', error);
@@ -60,8 +60,8 @@ const Attendance: React.FC = () => {
   const fetchStreakData = async () => {
     try {
       const response = await apiService.getCurrentStreak();
-      if (response.data.success) {
-        setStreak(response.data.data);
+      if (response.success) {
+        setStreak(response.data);
       }
     } catch (error) {
       console.error('Error fetching streak:', error);
@@ -71,8 +71,8 @@ const Attendance: React.FC = () => {
   const fetchCalendarData = async () => {
     try {
       const response = await apiService.getAttendanceCalendar(selectedYear, selectedMonth + 1);
-      if (response.data.success) {
-        setCalendarData(response.data.data);
+      if (response.success) {
+        setCalendarData(response.data.calendar || []);
       }
     } catch (error) {
       console.error('Error fetching calendar:', error);
@@ -193,7 +193,7 @@ const Attendance: React.FC = () => {
           <FaCalendarCheck className="stat-icon" />
           <div className="stat-content">
             <h4>Attendance Rate</h4>
-            <p className="stat-value">{summary?.attendanceRate.toFixed(1)}%</p>
+            <p className="stat-value">{summary?.attendanceRate?.toFixed(1) ?? '0.0'}%</p>
             <p className="stat-subtitle">{summary?.markedDays} of {summary?.totalDays} days</p>
           </div>
         </div>

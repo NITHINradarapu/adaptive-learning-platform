@@ -9,6 +9,7 @@ export interface IModule extends Document {
   isLocked: boolean; // Locked until prerequisites are met
   prerequisites: mongoose.Types.ObjectId[]; // Previous modules that must be completed
   estimatedTime: number; // in minutes
+  masteryThreshold: number; // 0-100, minimum score to consider mastered
   createdAt: Date;
   updatedAt: Date;
 }
@@ -48,6 +49,12 @@ const moduleSchema = new Schema<IModule>({
   estimatedTime: {
     type: Number,
     default: 0
+  },
+  masteryThreshold: {
+    type: Number,
+    default: 75,
+    min: 0,
+    max: 100
   }
 }, {
   timestamps: true

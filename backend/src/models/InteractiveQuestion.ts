@@ -6,6 +6,21 @@ export enum QuestionType {
   SHORT_ANSWER = 'short-answer'
 }
 
+export enum DifficultyLevel {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard'
+}
+
+export enum BloomsLevel {
+  REMEMBER = 'remember',
+  UNDERSTAND = 'understand',
+  APPLY = 'apply',
+  ANALYZE = 'analyze',
+  EVALUATE = 'evaluate',
+  CREATE = 'create'
+}
+
 export interface IOption {
   text: string;
   isCorrect: boolean;
@@ -23,6 +38,8 @@ export interface IInteractiveQuestion extends Document {
   explanation?: string; // Shown after answering
   timeLimit: number; // Time limit to answer in seconds
   maxRetries: number; // Maximum number of retry attempts
+  difficultyLevel: DifficultyLevel;
+  bloomsLevel: BloomsLevel;
   isRequired: boolean; // If true, blocks video progression
   points: number; // Points awarded for correct answer
   order: number; // Order of question in video
@@ -82,6 +99,16 @@ const interactiveQuestionSchema = new Schema<IInteractiveQuestion>({
   maxRetries: {
     type: Number,
     default: 2
+  },
+  difficultyLevel: {
+    type: String,
+    enum: Object.values(DifficultyLevel),
+    default: DifficultyLevel.MEDIUM
+  },
+  bloomsLevel: {
+    type: String,
+    enum: Object.values(BloomsLevel),
+    default: BloomsLevel.REMEMBER
   },
   isRequired: {
     type: Boolean,

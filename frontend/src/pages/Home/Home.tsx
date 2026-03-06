@@ -115,7 +115,7 @@ const Home: React.FC = () => {
 
       {/* Footer */}
       <footer className="home-footer">
-        <p>&copy; 2025 Adaptive Learning Platform. All rights reserved.</p>
+        <p>&copy; 2026 Adaptive Learning Platform. All rights reserved.</p>
       </footer>
     </div>
   );

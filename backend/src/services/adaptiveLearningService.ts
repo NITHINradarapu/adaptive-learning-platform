@@ -264,7 +264,7 @@ class AdaptiveLearningService {
       (mp: any) => mp.module.toString() === module._id.toString()
     );
     
-    return moduleProgress?.status !== ProgressStatus.NOT_STARTED || index === 0;
+    return (moduleProgress != null && moduleProgress.status !== ProgressStatus.NOT_STARTED) || index === 0;
   }
   
   /**

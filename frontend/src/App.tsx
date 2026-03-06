@@ -17,6 +17,8 @@ import CourseDetail from './pages/CourseDetail/CourseDetail';
 import VideoPlayer from './components/VideoPlayer/VideoPlayer';
 import Profile from './pages/Profile/Profile';
 import Attendance from './pages/Attendance/Attendance';
+import TeacherAnalytics from './pages/Teacher/TeacherAnalytics';
+import SpacedReview from './pages/Learner/SpacedReview';
 import './App.css';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -140,7 +142,11 @@ const App: React.FC = () => {
             {/* Legacy admin routes - redirect to teacher routes */}
             <Route path="/admin/courses" element={<Navigate to="/teacher/create-course" replace />} />
             <Route path="/admin/manage-courses" element={<Navigate to="/teacher/manage-courses" replace />} />
-            <Route path="/admin/courses/edit/:courseId" element={<Navigate to="/teacher/edit-course/:courseId" replace />} />
+            <Route path="/admin/courses/edit/:courseId" element={
+              <TeacherRoute>
+                <EditCourse />
+              </TeacherRoute>
+            } />
             
             <Route
               path="/course/:courseId"
@@ -178,7 +184,28 @@ const App: React.FC = () => {
                   <Attendance />
                 </PrivateRoute>
               }
-            />          </Routes>
+            />
+
+            {/* Teacher Analytics Dashboard */}
+            <Route
+              path="/teacher/analytics"
+              element={
+                <TeacherRoute>
+                  <TeacherAnalytics />
+                </TeacherRoute>
+              }
+            />
+
+            {/* Spaced Repetition Reviews */}
+            <Route
+              path="/learner/reviews"
+              element={
+                <PrivateRoute>
+                  <SpacedReview />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
         </main>
       </div>
     </Router>

@@ -1,0 +1,234 @@
+.spaced-review {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.spaced-review h1 {
+  font-size: 1.8rem;
+  color: #1a1a2e;
+  margin-bottom: 0.5rem;
+}
+
+.spaced-review .subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+/* Review Summary Cards */
+.review-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.review-stat {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.review-stat .value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.review-stat .value.urgent { color: #ef476f; }
+.review-stat .value.upcoming { color: #ffd166; }
+.review-stat .value.mastered { color: #06d6a0; }
+.review-stat .value.primary { color: #4361ee; }
+
+.review-stat .label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+/* Review Queue */
+.review-queue {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+}
+
+.review-queue h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.review-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s;
+}
+
+.review-item:hover {
+  border-color: #4361ee;
+  box-shadow: 0 2px 8px rgba(67, 97, 238, 0.1);
+}
+
+.review-item .item-info {
+  flex: 1;
+}
+
+.review-item .item-title {
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 0.25rem;
+}
+
+.review-item .item-meta {
+  font-size: 0.85rem;
+  color: #666;
+  display: flex;
+  gap: 1rem;
+}
+
+.review-item .status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.new { background: #e0e7ff; color: #4361ee; }
+.status-badge.learning { background: #fff3cd; color: #856404; }
+.status-badge.review { background: #d4edda; color: #155724; }
+.status-badge.mastered { background: #d1fae5; color: #065f46; }
+
+.review-btn {
+  padding: 0.5rem 1.25rem;
+  background: #4361ee;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.review-btn:hover {
+  background: #3651d4;
+}
+
+.review-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Mastery Progress */
+.mastery-bar {
+  height: 20px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.mastery-bar .fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4361ee, #06d6a0);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Quiz Modal */
+.review-quiz-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.review-quiz-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.review-quiz-modal h3 {
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+}
+
+.quiz-question {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.quiz-question .q-text {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.quiz-question .q-options {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.quiz-question .q-option {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quiz-question .q-option:hover {
+  border-color: #4361ee;
+  background: #f8f9ff;
+}
+
+.quiz-question .q-option.selected {
+  border-color: #4361ee;
+  background: #4361ee;
+  color: white;
+}
+
+.quiz-question input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.empty-state .icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}

@@ -2,6 +2,17 @@ import axios, { AxiosInstance, AxiosError } from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+// Lazy import to avoid circular dependency
+let _getLogout: (() => void) | null = null;
+const getLogoutFn = () => {
+  if (!_getLogout) {
+    // Dynamic import at first use
+    const { useAuthStore } = require('../store/authStore');
+    _getLogout = () => useAuthStore.getState().logout();
+  }
+  return _getLogout;
+};
+
 class ApiService {
   private api: AxiosInstance;
 
@@ -30,9 +41,12 @@ class ApiService {
       (response) => response,
       (error: AxiosError) => {
         if (error.response?.status === 401) {
-          // Token expired or invalid
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
+          // Token expired or invalid — clear auth state properly
+          try {
+            getLogoutFn()();
+          } catch {
+            localStorage.removeItem('token');
+          }
           window.location.href = '/login';
         }
         return Promise.reject(error);
@@ -177,6 +191,11 @@ class ApiService {
     return response.data;
   }
 
+  async deleteQuestion(videoId: string, questionId: string) {
+    const response = await this.api.delete(`/videos/${videoId}/questions/${questionId}`);
+    return response.data;
+  }
+
   // Progress endpoints
   async getDashboard() {
     const response = await this.api.get('/progress/dashboard');
@@ -218,6 +237,100 @@ class ApiService {
 
   async getCurrentStreak() {
     const response = await this.api.get('/attendance/streaks/current');
+    return response.data;
+  }
+
+  // ---- Analytics & Engagement endpoints ----
+
+  async trackEngagement(data: any) {
+    const response = await this.api.post('/analytics/engagement/track', data);
+    return response.data;
+  }
+
+  async getEngagementScore(courseId?: string) {
+    const response = await this.api.get('/analytics/engagement/score', {
+      params: courseId ? { courseId } : {},
+    });
+    return response.data;
+  }
+
+  async getVideoEngagement(videoId: string) {
+    const response = await this.api.get(`/analytics/engagement/video/${videoId}`);
+    return response.data;
+  }
+
+  // ---- RL Recommendation endpoints ----
+
+  async getRLRecommendation(courseId?: string) {
+    const response = await this.api.get('/analytics/recommendations', {
+      params: courseId ? { courseId } : {},
+    });
+    return response.data;
+  }
+
+  async processRLInteraction(data: any) {
+    const response = await this.api.post('/analytics/rl/interaction', data);
+    return response.data;
+  }
+
+  async getRLStats() {
+    const response = await this.api.get('/analytics/rl/stats');
+    return response.data;
+  }
+
+  // ---- Teacher Analytics endpoints ----
+
+  async getTeacherCourseDashboard(courseId: string) {
+    const response = await this.api.get(`/teacher-analytics/course/${courseId}/dashboard`);
+    return response.data;
+  }
+
+  async getTeacherStudentPerformance(courseId: string) {
+    const response = await this.api.get(`/teacher-analytics/course/${courseId}/students`);
+    return response.data;
+  }
+
+  async getAtRiskStudents() {
+    const response = await this.api.get('/teacher-analytics/at-risk');
+    return response.data;
+  }
+
+  async assessStudentRisk(studentId: string) {
+    const response = await this.api.get(`/teacher-analytics/student/${studentId}/risk`);
+    return response.data;
+  }
+
+  // ---- Spaced Repetition endpoints ----
+
+  async getDueReviews() {
+    const response = await this.api.get('/spaced-repetition/due');
+    return response.data;
+  }
+
+  async getAllReviewSchedules() {
+    const response = await this.api.get('/spaced-repetition/schedules');
+    return response.data;
+  }
+
+  async getReviewSummary() {
+    const response = await this.api.get('/spaced-repetition/summary');
+    return response.data;
+  }
+
+  async getReviewQuestions(moduleId: string, count?: number) {
+    const response = await this.api.get(`/spaced-repetition/module/${moduleId}/questions`, {
+      params: count ? { count } : {},
+    });
+    return response.data;
+  }
+
+  async submitReview(moduleId: string, data: { score: number; responseTime: number }) {
+    const response = await this.api.post(`/spaced-repetition/module/${moduleId}/submit`, data);
+    return response.data;
+  }
+
+  async initializeSpacedRepetition(moduleId: string, courseId: string) {
+    const response = await this.api.post(`/spaced-repetition/module/${moduleId}/init`, { courseId });
     return response.data;
   }
 }

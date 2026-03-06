@@ -6,9 +6,9 @@ import './ManageQuestions.css';
 
 interface Question {
   _id: string;
-  questionText: string;
-  questionType: 'multiple-choice' | 'fill-blank' | 'short-answer';
-  options?: string[];
+  question: string;
+  questionType: 'mcq' | 'fill-in-blank' | 'short-answer';
+  options?: { text: string; isCorrect: boolean }[];
   correctAnswer: string;
   timestamp: number;
   points: number;
@@ -27,13 +27,15 @@ const ManageQuestions: React.FC = () => {
 
   const [formData, setFormData] = useState({
     questionText: '',
-    questionType: 'multiple-choice' as 'multiple-choice' | 'fill-blank' | 'short-answer',
+    questionType: 'mcq' as 'mcq' | 'fill-in-blank' | 'short-answer',
     options: ['', '', '', ''],
     correctAnswer: '',
     timestamp: 0,
     points: 10,
     timeLimit: 60,
-    hint: ''
+    hint: '',
+    difficultyLevel: 'medium' as 'easy' | 'medium' | 'hard',
+    bloomsLevel: 'remember' as 'remember' | 'understand' | 'apply' | 'analyze' | 'evaluate' | 'create'
   });
 
   useEffect(() => {
@@ -78,17 +80,21 @@ const ManageQuestions: React.FC = () => {
 
     try {
       const questionData: any = {
-        questionText: formData.questionText,
+        question: formData.questionText,
         questionType: formData.questionType,
         correctAnswer: formData.correctAnswer,
         timestamp: formData.timestamp,
         points: formData.points,
         timeLimit: formData.timeLimit || undefined,
-        hint: formData.hint || undefined
+        hint: formData.hint || undefined,
+        difficultyLevel: formData.difficultyLevel,
+        bloomsLevel: formData.bloomsLevel
       };
 
-      if (formData.questionType === 'multiple-choice') {
-        questionData.options = formData.options.filter(opt => opt.trim() !== '');
+      if (formData.questionType === 'mcq') {
+        questionData.options = formData.options
+          .filter(opt => opt.trim() !== '')
+          .map(opt => ({ text: opt, isCorrect: opt === formData.correctAnswer }));
       }
 
       await apiService.createQuestion(videoId!, questionData);
@@ -96,13 +102,15 @@ const ManageQuestions: React.FC = () => {
       setShowForm(false);
       setFormData({
         questionText: '',
-        questionType: 'multiple-choice',
+        questionType: 'mcq',
         options: ['', '', '', ''],
         correctAnswer: '',
         timestamp: 0,
         points: 10,
         timeLimit: 60,
-        hint: ''
+        hint: '',
+        difficultyLevel: 'medium',
+        bloomsLevel: 'remember'
       });
       
       await loadData();
@@ -115,8 +123,7 @@ const ManageQuestions: React.FC = () => {
     if (!window.confirm('Delete this question?')) return;
 
     try {
-      // Note: You'll need to add this endpoint to your API
-      // await apiService.deleteQuestion(questionId);
+      await apiService.deleteQuestion(videoId!, questionId);
       setQuestions(questions.filter(q => q._id !== questionId));
     } catch (err) {
       setError('Failed to delete question');
@@ -169,8 +176,8 @@ const ManageQuestions: React.FC = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="multiple-choice">Multiple Choice</option>
-                <option value="fill-blank">Fill in the Blank</option>
+                <option value="mcq">Multiple Choice</option>
+                <option value="fill-in-blank">Fill in the Blank</option>
                 <option value="short-answer">Short Answer</option>
               </select>
             </div>
@@ -186,7 +193,7 @@ const ManageQuestions: React.FC = () => {
               />
             </div>
 
-            {formData.questionType === 'multiple-choice' && (
+            {formData.questionType === 'mcq' && (
               <div className="form-group">
                 <label>Options (Enter at least 2)</label>
                 {formData.options.map((option, index) => (
@@ -261,6 +268,37 @@ const ManageQuestions: React.FC = () => {
               />
             </div>
 
+            <div className="form-row">
+              <div className="form-group">
+                <label>Difficulty Level</label>
+                <select
+                  name="difficultyLevel"
+                  value={formData.difficultyLevel}
+                  onChange={handleChange}
+                >
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Bloom's Taxonomy Level</label>
+                <select
+                  name="bloomsLevel"
+                  value={formData.bloomsLevel}
+                  onChange={handleChange}
+                >
+                  <option value="remember">Remember</option>
+                  <option value="understand">Understand</option>
+                  <option value="apply">Apply</option>
+                  <option value="analyze">Analyze</option>
+                  <option value="evaluate">Evaluate</option>
+                  <option value="create">Create</option>
+                </select>
+              </div>
+            </div>
+
             <div className="form-actions">
               <button type="submit" className="btn-primary">
                 <FaCheck /> Create Question
@@ -287,12 +325,12 @@ const ManageQuestions: React.FC = () => {
                 <span className="timestamp">@ {Math.floor(question.timestamp / 60)}:{(question.timestamp % 60).toString().padStart(2, '0')}</span>
               </div>
               <div className="question-content">
-                <p className="question-text">{question.questionText}</p>
+                <p className="question-text">{question.question}</p>
                 {question.options && (
                   <div className="question-options">
                     {question.options.map((opt, idx) => (
-                      <span key={idx} className={`option ${opt === question.correctAnswer ? 'correct' : ''}`}>
-                        {opt}
+                      <span key={idx} className={`option ${opt.isCorrect ? 'correct' : ''}`}>
+                        {opt.text}
                       </span>
                     ))}
                   </div>

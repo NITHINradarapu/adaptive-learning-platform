@@ -93,13 +93,13 @@ export const markAttendance = async (req: Request, res: Response): Promise<void>
     attendance.videosWatched += videosWatched || 0;
     attendance.totalTimeSpent += timeSpent || 0;
     
-    if (courseId && !attendance.coursesAccessed.includes(courseId)) {
+    if (courseId && !attendance.coursesAccessed.some((id: any) => id.toString() === courseId.toString())) {
       attendance.coursesAccessed.push(courseId);
     }
     
-    // Mark as attended if minimum criteria met
-    // Criteria: At least 1 checkpoint completed OR 10+ minutes of watch time
-    if (attendance.checkpointsCompleted >= 1 || attendance.totalTimeSpent >= 10) {
+    // Mark as attended ONLY if checkpoint completed
+    // Ensures genuine engagement through quiz/question answering
+    if (attendance.checkpointsCompleted >= 1) {
       attendance.isMarked = true;
     }
     
@@ -252,9 +252,10 @@ export const getAttendanceCalendar = async (req: Request, res: Response): Promis
     const { year, month } = req.query;
     
     // Default to current month
+    // Accept 1-indexed month from client (1=January, 12=December)
     const currentDate = new Date();
     const targetYear = year ? parseInt(year as string) : currentDate.getFullYear();
-    const targetMonth = month ? parseInt(month as string) : currentDate.getMonth();
+    const targetMonth = month ? parseInt(month as string) - 1 : currentDate.getMonth();
     
     // Get first and last day of month
     const firstDay = new Date(targetYear, targetMonth, 1);

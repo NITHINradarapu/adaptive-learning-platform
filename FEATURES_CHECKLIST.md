@@ -321,6 +321,70 @@
 
 ---
 
+## 🤖 AI/ML Intelligent Systems
+
+### Adaptive Learning Engine
+- [x] Personalized learning path generation
+- [x] Starting point determination based on background
+- [x] Career goal-based content recommendations
+- [x] Difficulty matching with performance adaptation
+- [x] Course scoring algorithm (career +30, difficulty +25, performance +20, rating +15, popularity +10)
+
+### Reinforcement Learning Agent (Q-Learning)
+- [x] Epsilon-greedy Q-learning implementation (ε=0.15)
+- [x] 6-action space (next topic, revision, easy, advanced, break, switch format)
+- [x] State representation (6 factors: quiz, engagement, mastery, retries, completion, streak)
+- [x] Reward function design
+- [x] Persistent Q-table in MongoDB (`RLQTable` model)
+- [x] RL stats API endpoint
+- [x] Frontend integration with recommendation display
+
+### Spaced Repetition (SM-2 Algorithm)
+- [x] SuperMemo 2 algorithm implementation
+- [x] Easiness Factor (EF) dynamic calculation
+- [x] Interval scheduling (1d → 6d → EF × prev)
+- [x] Status tracking (new → learning → review → mastered)
+- [x] Review summary API (due now, due tomorrow, mastery %)
+- [x] `SpacedRepetition` MongoDB model
+- [x] Dedicated review page (`/learner/reviews`)
+- [x] Dashboard reminder for due reviews
+
+### Risk Detection Service
+- [x] Multi-factor risk assessment
+- [x] Engagement factor analysis
+- [x] Performance trend analysis
+- [x] Login consistency evaluation
+- [x] Streak-based risk indicator
+- [x] Three risk levels (low, medium, high)
+- [x] AI-generated intervention suggestions
+- [x] Teacher-facing at-risk students tab
+
+### Engagement Analytics Engine
+- [x] Weighted engagement formula
+- [x] Quiz accuracy component (30%)
+- [x] Watch completion component (20%)
+- [x] Consistency component (20%)
+- [x] Replay behavior component (15%)
+- [x] Participation frequency component (15%)
+- [x] `EngagementEvent` granular tracking model
+- [x] `Analytics` aggregated model
+- [x] Engagement score on learner dashboard
+
+### Teacher Analytics Dashboard
+- [x] Topic-wise performance heatmap
+- [x] Video drop-off detection
+- [x] Question item analysis (success rate, Bloom's, hint usage, avg time)
+- [x] Engagement distribution chart
+- [x] AI-generated text insights
+- [x] Per-student performance table
+- [x] Tab-based navigation (overview, students, questions, risk)
+
+### Recommendation Service
+- [x] Dedicated recommendation endpoint
+- [x] Career-goal fallback recommendation
+
+---
+
 ## 🚀 Deployment Ready
 
 - [x] Environment configuration
@@ -336,31 +400,29 @@
 
 ## 🎯 Future Enhancements (Documented)
 
-- [ ] Video hosting integration
-- [ ] PDF certificates
-- [ ] Discussion forums
-- [ ] Email notifications
+- [ ] Video hosting integration (cloud storage)
+- [ ] PDF certificates of completion
+- [ ] Discussion forums / community
+- [ ] Email notifications for reviews and risk alerts
 - [ ] Mobile app (React Native)
-- [ ] Machine Learning recommendations
-- [ ] Live streaming
-- [ ] Analytics dashboard
+- [ ] Live streaming for classes
 - [ ] Multi-language support
 - [ ] Payment integration
-- [ ] Social features
-- [ ] Gamification
+- [ ] Social features (study groups)
 
 ---
 
 ## 📊 Metrics
 
 ### Code Metrics
-- **Total Files**: 55+
-- **Lines of Code**: 6000+
+- **Total Files**: 80+
+- **Lines of Code**: 10000+
 - **TypeScript Coverage**: 100%
 - **Components**: 20+
-- **Pages**: 12+
-- **API Routes**: 5+
-- **Database Models**: 9
+- **Pages**: 15+
+- **API Route Groups**: 9
+- **Database Models**: 13
+- **Backend Services**: 7 AI/ML services
 - **Portals**: 2 (Teacher & Learner)
 
 ### Feature Metrics
@@ -371,14 +433,20 @@
 - **Progress Tracking**: ✅ Complete
 - **Interactive Learning**: ✅ Complete
 - **Role-Based Access**: ✅ Complete
-- **API Endpoints**: 25+
-- **Database Models**: 9
+- **Reinforcement Learning**: ✅ Complete (Q-Learning)
+- **Spaced Repetition**: ✅ Complete (SM-2)
+- **Risk Detection**: ✅ Complete
+- **Engagement Analytics**: ✅ Complete
+- **Teacher Analytics**: ✅ Complete
+- **API Endpoints**: 35+
+- **Database Models**: 13
 
 ### Functionality Metrics
-- **Features Implemented**: 100+
+- **Features Implemented**: 150+
 - **CRUD Operations**: Full coverage
-- **User Flows**: 5 major flows
-- **Pages**: 10+
+- **User Flows**: 8+ major flows
+- **Pages**: 15+
+- **AI/ML Algorithms**: 4 (Adaptive, Q-Learning, SM-2, Risk Detection)
 - **Test Data**: 12 courses, 1 user
 
 ---
@@ -387,8 +455,9 @@
 
 All core features implemented and working. Project demonstrates:
 - Full-stack development skills
-- Modern web technologies
+- Modern web technologies  
 - Clean architecture
+- AI/ML integration (RL, SM-2, Risk Detection, Engagement Analytics)
 - User-centered design
 - Production-ready code
 - Scalable foundation
@@ -397,4 +466,4 @@ All core features implemented and working. Project demonstrates:
 
 ---
 
-*Last Updated: December 14, 2025*
+*Last Updated: February 20, 2026*

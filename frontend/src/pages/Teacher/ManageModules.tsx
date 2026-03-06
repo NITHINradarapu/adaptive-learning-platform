@@ -60,7 +60,7 @@ const ManageModules: React.FC = () => {
     try {
       setLoading(true);
       const course = await apiService.getCourse(courseId!);
-      setCourseName(course.title);
+      setCourseName(course.data?.title || course.title || '');
       await loadModules();
     } catch (err: any) {
       setError('Failed to load course data');

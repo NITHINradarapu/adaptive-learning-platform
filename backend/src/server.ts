@@ -15,6 +15,9 @@ import moduleRoutes from './routes/moduleRoutes';
 import videoRoutes from './routes/videoRoutes';
 import progressRoutes from './routes/progressRoutes';
 import attendanceRoutes from './routes/attendanceRoutes';
+import analyticsRoutes from './routes/analyticsRoutes';
+import teacherAnalyticsRoutes from './routes/teacherAnalyticsRoutes';
+import spacedRepetitionRoutes from './routes/spacedRepetitionRoutes';
 
 // Load environment variables
 dotenv.config();
@@ -55,6 +58,9 @@ app.use('/api/modules', moduleRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/attendance', attendanceRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/teacher-analytics', teacherAnalyticsRoutes);
+app.use('/api/spaced-repetition', spacedRepetitionRoutes);
 
 // Welcome route
 app.get('/', (_req: Request, res: Response) => {
@@ -69,7 +75,10 @@ app.get('/', (_req: Request, res: Response) => {
       courses: '/api/courses',
       videos: '/api/videos',
       progress: '/api/progress',
-      attendance: '/api/attendance'
+      attendance: '/api/attendance',
+      analytics: '/api/analytics',
+      teacherAnalytics: '/api/teacher-analytics',
+      spacedRepetition: '/api/spaced-repetition'
     }
   });
 });

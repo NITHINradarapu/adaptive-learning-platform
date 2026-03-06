@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { apiService } from '../../services/api';
-import { DashboardStats, Course } from '../../types';
-import { FaFire, FaTrophy, FaBook, FaCheckCircle, FaSearch, FaStar } from 'react-icons/fa';
+import { DashboardStats, Course, RLRecommendation, ReviewSummary } from '../../types';
+import { FaFire, FaTrophy, FaBook, FaCheckCircle, FaSearch, FaStar, FaBrain, FaRobot } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import './LearnerDashboard.css';
 
 const LearnerDashboard: React.FC = () => {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([]);
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [rlRecommendation, setRlRecommendation] = useState<RLRecommendation | null>(null);
+  const [engagementScore, setEngagementScore] = useState<number | null>(null);
+  const [reviewSummary, setReviewSummary] = useState<ReviewSummary | null>(null);
 
   useEffect(() => {
     loadDashboard();
@@ -42,6 +47,20 @@ const LearnerDashboard: React.FC = () => {
       }
       
       setAllCourses(coursesRes.data || []);
+
+      // Load AI-powered features
+      try {
+        const [engRes, rlRes, reviewRes] = await Promise.all([
+          apiService.getEngagementScore(),
+          apiService.getRLRecommendation(),
+          apiService.getReviewSummary(),
+        ]);
+        setEngagementScore(engRes.data?.engagementScore ?? null);
+        setRlRecommendation(rlRes.data || null);
+        setReviewSummary(reviewRes.data || null);
+      } catch {
+        // AI features are optional
+      }
     } catch (error) {
       console.error('Error loading dashboard:', error);
     } finally {
@@ -152,6 +171,77 @@ const LearnerDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* AI-Powered Recommendation */}
+      {rlRecommendation && (
+        <section className="dashboard-section" style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          borderRadius: '16px',
+          padding: '1.5rem',
+          color: 'white',
+          marginBottom: '1.5rem',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+            <FaRobot size={24} />
+            <h2 style={{ color: 'white', margin: 0 }}>AI Recommendation</h2>
+          </div>
+          <p style={{ fontSize: '1.1rem', marginBottom: '0.75rem', opacity: 0.95 }}>
+            {rlRecommendation.message}
+          </p>
+          {rlRecommendation.suggestedContent.length > 0 && (
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              {rlRecommendation.suggestedContent.map((item, i) => (
+                <span key={i} style={{
+                  background: 'rgba(255,255,255,0.2)',
+                  padding: '0.4rem 1rem',
+                  borderRadius: '20px',
+                  fontSize: '0.9rem',
+                }}>
+                  {item.title}
+                </span>
+              ))}
+            </div>
+          )}
+          {engagementScore !== null && (
+            <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ opacity: 0.8, fontSize: '0.9rem' }}>Engagement Score:</span>
+              <div style={{ flex: 1, maxWidth: '200px', height: '8px', background: 'rgba(255,255,255,0.3)', borderRadius: '4px' }}>
+                <div style={{ width: `${Math.round(engagementScore * 100)}%`, height: '100%', background: 'white', borderRadius: '4px' }} />
+              </div>
+              <span style={{ fontWeight: 700 }}>{Math.round(engagementScore * 100)}%</span>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Spaced Repetition Reminder */}
+      {reviewSummary && reviewSummary.dueNow > 0 && (
+        <section className="dashboard-section" style={{
+          background: '#fff3e0',
+          border: '2px solid #ffb74d',
+          borderRadius: '16px',
+          padding: '1.25rem',
+          marginBottom: '1.5rem',
+          cursor: 'pointer',
+        }}
+        onClick={() => navigate('/learner/reviews')}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <FaBrain size={24} color="#f57c00" />
+              <div>
+                <h3 style={{ margin: 0, color: '#e65100' }}>
+                  {reviewSummary.dueNow} Review{reviewSummary.dueNow > 1 ? 's' : ''} Due!
+                </h3>
+                <p style={{ margin: '0.25rem 0 0', color: '#bf360c', fontSize: '0.9rem' }}>
+                  Strengthen your memory with spaced repetition
+                </p>
+              </div>
+            </div>
+            <span style={{ color: '#f57c00', fontWeight: 600 }}>Start Review →</span>
+          </div>
+        </section>
+      )}
 
       {/* My Enrolled Courses */}
       <section className="dashboard-section">

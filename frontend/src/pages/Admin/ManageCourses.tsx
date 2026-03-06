@@ -64,7 +64,7 @@ const ManageCourses: React.FC = () => {
         </div>
         <button 
           className="btn-create"
-          onClick={() => navigate('/admin/courses')}
+          onClick={() => navigate('/teacher/create-course')}
         >
           <FaPlus /> Create New Course
         </button>
@@ -76,7 +76,7 @@ const ManageCourses: React.FC = () => {
           <p>You haven't created any courses. Start by creating your first course!</p>
           <button 
             className="btn-primary"
-            onClick={() => navigate('/admin/courses')}
+            onClick={() => navigate('/teacher/create-course')}
           >
             <FaPlus /> Create Your First Course
           </button>
@@ -109,7 +109,7 @@ const ManageCourses: React.FC = () => {
                       <div>
                         <div className="course-title">{course.title}</div>
                         <div className="course-description-short">
-                          {course.description.substring(0, 80)}...
+                          {course.description?.substring(0, 80) || 'No description'}...
                         </div>
                       </div>
                     </div>
@@ -137,7 +137,7 @@ const ManageCourses: React.FC = () => {
                       </button>
                       <button
                         className="btn-action btn-edit"
-                        onClick={() => navigate(`/admin/courses/edit/${course._id}`)}
+                        onClick={() => navigate(`/teacher/edit-course/${course._id}`)}
                         title="Edit Course"
                       >
                         <FaEdit />
