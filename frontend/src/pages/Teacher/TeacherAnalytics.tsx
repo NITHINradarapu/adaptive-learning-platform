@@ -17,6 +17,7 @@ const TeacherAnalytics: React.FC = () => {
   useEffect(() => {
     fetchCourses();
     fetchAtRiskStudents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

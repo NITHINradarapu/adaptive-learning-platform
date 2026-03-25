@@ -1,6 +1,6 @@
 .navbar {
   background: white;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 4px 4px 0px var(--text-primary);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -82,7 +82,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   position: relative;
 }
 
@@ -114,14 +114,14 @@
   background: var(--primary-gradient);
   color: white;
   padding: 0.625rem 1.25rem;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   transition: var(--transition);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .nav-link-primary:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .user-menu {
@@ -138,7 +138,7 @@
   font-weight: 600;
   padding: 0.5rem 1rem;
   background: var(--bg-secondary);
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   transition: var(--transition);
 }
 
@@ -158,11 +158,11 @@
   background: var(--primary-gradient);
   color: white;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: 0;
   font-size: 0.75rem;
   text-transform: capitalize;
   font-weight: 700;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .profile-link {
@@ -174,7 +174,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
 }
 
 .profile-link:hover {
@@ -189,7 +189,7 @@
   background: var(--bg-secondary);
   border: 2px solid var(--border-color);
   padding: 0.625rem 1.25rem;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   color: var(--text-primary);
   font-weight: 600;
   cursor: pointer;
@@ -201,7 +201,7 @@
   border-color: var(--danger-color);
   color: var(--danger-color);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 @media (max-width: 768px) {

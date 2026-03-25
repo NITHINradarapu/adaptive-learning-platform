@@ -61,7 +61,7 @@ const Profile: React.FC = () => {
         updateData.newPassword = formData.newPassword;
       }
 
-      const response = await apiService.updateProfile(updateData);
+      await apiService.updateProfile(updateData);
       
       // Update auth store with new user data
       try {

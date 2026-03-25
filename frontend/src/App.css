@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -5,39 +7,47 @@
 }
 
 :root {
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  --primary-color: #667eea;
-  --secondary-color: #764ba2;
-  --success-color: #4caf50;
-  --warning-color: #ff9800;
-  --danger-color: #f44336;
-  --text-primary: #1a202c;
-  --text-secondary: #4a5568;
-  --bg-primary: #ffffff;
-  --bg-secondary: #f7fafc;
-  --border-color: #e2e8f0;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --primary-gradient: #FF5A5F;
+  --secondary-gradient: #087E8B;
+  --success-gradient: #00A6A6;
+  --primary-color: #FF5A5F;
+  --secondary-color: #087E8B;
+  --success-color: #00A6A6;
+  --warning-color: #F5B700;
+  --danger-color: #D90368;
+  --text-primary: #111111;
+  --text-secondary: #444444;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FDFBF7;
+  --border-color: #111111;
+  --shadow-sm: 2px 2px 0px #111111;
+  --shadow-md: 4px 4px 0px #111111;
+  --shadow-lg: 6px 6px 0px #111111;
+  --shadow-xl: 8px 8px 0px #111111;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-heading: 'DM Serif Display', serif;
+  --font-body: 'Space Mono', monospace;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--bg-secondary);
+  background-color: var(--bg-secondary);
+  background-image: radial-gradient(var(--border-color) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
   color: var(--text-primary);
   line-height: 1.6;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
 
 .app {
   min-height: 100vh;
@@ -55,64 +65,57 @@ code {
     monospace;
 }
 
-/* Global Button Styles */
+/* === OPEN SOURCE COMPONENT: The "Mechanical 3D" Neobrutalist Button === */
 .btn-primary,
 .btn-secondary,
 .btn-danger,
 .btn-success {
   padding: 0.75rem 1.5rem;
-  border: none;
+  border: 3px solid var(--text-primary);
   border-radius: var(--radius-sm);
+  font-family: var(--font-body);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  box-shadow: var(--shadow-sm);
+  gap: 0.75rem;
+  box-shadow: 4px 4px 0px var(--text-primary);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-primary {
-  background: var(--primary-gradient);
-  color: white;
+  background: var(--primary-color);
+  color: #fff;
 }
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
 .btn-secondary {
-  background: #e2e8f0;
+  background: var(--bg-primary);
   color: var(--text-primary);
 }
-
-.btn-secondary:hover {
-  background: #cbd5e0;
-  transform: translateY(-2px);
-}
-
 .btn-danger {
   background: var(--danger-color);
-  color: white;
+  color: #fff;
 }
-
-.btn-danger:hover {
-  background: #d32f2f;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
 .btn-success {
   background: var(--success-color);
-  color: white;
+  color: #fff;
 }
 
-.btn-success:hover {
-  background: #43a047;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+/* Hover: Lift and expand shadow */
+.btn-primary:hover, .btn-secondary:hover, .btn-danger:hover, .btn-success:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--text-primary);
+  filter: brightness(1.1);
+}
+
+/* Active: Squish down completely (The funny/satisfying mechanical click) */
+.btn-primary:active, .btn-secondary:active, .btn-danger:active, .btn-success:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px var(--text-primary);
 }
 
 .btn-sm {
@@ -120,18 +123,41 @@ code {
   font-size: 0.875rem;
 }
 
-/* Card Styles */
+/* === OPEN SOURCE COMPONENT: The "Sticky Note" Comic Card === */
 .card {
   background: var(--bg-primary);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-md);
-  transition: var(--transition);
+  border: 3px solid var(--text-primary);
+  border-radius: 0; /* Boxy for the classic look */
+  padding: 2rem;
+  box-shadow: 8px 8px 0px var(--text-primary);
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  /* Add a slightly quirky tilt to make it funny/casual */
+  transform: rotate(-1deg);
+}
+
+.card:nth-child(even) {
+  transform: rotate(1deg); /* Alternate tilt */
+}
+
+.card::before {
+  /* Tape piece effect */
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(2deg);
+  width: 60px;
+  height: 25px;
+  background: rgba(255, 235, 59, 0.7); /* Semi-transparent yellow tape */
+  border: 1px solid #ccc;
+  z-index: 10;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
+  transform: rotate(0deg) translate(-4px, -4px);
+  box-shadow: 12px 12px 0px var(--text-primary);
 }
 
 /* Loading Animation */
@@ -200,25 +226,30 @@ code {
   animation: slideInRight 0.5s ease-out;
 }
 
-/* Form Input Styles */
+/* === OPEN SOURCE COMPONENT: Chunky Brutalist Inputs === */
 input:not([type="checkbox"]):not([type="radio"]),
 textarea,
 select {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
+  font-family: var(--font-body);
   font-size: 1rem;
-  transition: var(--transition);
+  font-weight: 600;
+  transition: all 0.15s ease-in-out;
   background: var(--bg-primary);
+  box-shadow: 4px 4px 0px var(--text-primary);
+  margin-bottom: 0.5rem;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background-color: #FAFAFA;
+  box-shadow: 0px 0px 0px var(--text-primary);
+  transform: translate(4px, 4px);
 }
 
 /* Alert Styles */

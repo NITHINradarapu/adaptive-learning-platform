@@ -18,9 +18,9 @@
 
 .edit-form {
   background: white;
-  border-radius: 12px;
+  border-radius: 0;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .form-group {
@@ -40,7 +40,7 @@
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #dee2e6;
-  border-radius: 6px;
+  border-radius: 0;
   font-size: 1rem;
 }
 
@@ -65,17 +65,17 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .btn-save:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .btn-save:disabled {
@@ -91,7 +91,7 @@
   background: #f8f9fa;
   color: #2c3e50;
   border: 1px solid #dee2e6;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -107,7 +107,7 @@
   padding: 0.75rem 1.5rem;
   background: #f8f9fa;
   border: 1px solid #dee2e6;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -118,7 +118,7 @@
 
 .alert {
   padding: 1rem;
-  border-radius: 6px;
+  border-radius: 0;
   margin-bottom: 1.5rem;
 }
 

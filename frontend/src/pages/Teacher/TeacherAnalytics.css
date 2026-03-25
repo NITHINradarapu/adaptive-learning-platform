@@ -23,7 +23,7 @@
 .course-selector select {
   padding: 0.75rem 1rem;
   border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 1rem;
   min-width: 300px;
   background: white;
@@ -39,9 +39,9 @@
 
 .stat-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 0;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 4px 4px 0px var(--text-primary);
   text-align: center;
 }
 
@@ -60,9 +60,9 @@
 /* Section Card */
 .analytics-section {
   background: white;
-  border-radius: 12px;
+  border-radius: 0;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 4px 4px 0px var(--text-primary);
   margin-bottom: 1.5rem;
 }
 
@@ -84,7 +84,7 @@
 
 .heatmap-item {
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 0;
   padding: 1rem;
   position: relative;
 }
@@ -97,14 +97,14 @@
 .heatmap-item .score-bar {
   height: 8px;
   background: #e0e0e0;
-  border-radius: 4px;
+  border-radius: 0;
   overflow: hidden;
   margin-bottom: 0.5rem;
 }
 
 .heatmap-item .score-bar .fill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 0;
   transition: width 0.3s ease;
 }
 
@@ -146,7 +146,7 @@
 .badge {
   display: inline-block;
   padding: 0.2rem 0.6rem;
-  border-radius: 12px;
+  border-radius: 0;
   font-size: 0.75rem;
   font-weight: 600;
 }
@@ -178,7 +178,7 @@
 
 .engagement-bar .bar {
   width: 60px;
-  border-radius: 4px 4px 0 0;
+  border-radius: 0;
   transition: height 0.3s ease;
   min-height: 4px;
 }
@@ -210,7 +210,7 @@
 
 .risk-card {
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 0;
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
@@ -251,7 +251,7 @@
   border-left: 3px solid #4361ee;
   background: #f8f9ff;
   margin-bottom: 0.5rem;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0;
   font-size: 0.95rem;
 }
 

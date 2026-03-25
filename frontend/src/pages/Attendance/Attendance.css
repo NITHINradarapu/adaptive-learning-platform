@@ -11,7 +11,7 @@
 
 .attendance-header h1 {
   font-size: 2.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -39,28 +39,28 @@
 }
 
 .streak-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color);
   color: white;
   padding: 2rem;
-  border-radius: 15px;
+  border-radius: 0;
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 4px 4px 0px var(--text-primary);
   transition: transform 0.3s ease;
 }
 
 .streak-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .streak-card.current-streak {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: var(--primary-color);
 }
 
 .streak-card.longest-streak {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: var(--primary-color);
 }
 
 .streak-icon {
@@ -92,8 +92,8 @@
 .stat-card {
   background: white;
   padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  box-shadow: 4px 4px 0px var(--text-primary);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -102,7 +102,7 @@
 
 .stat-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .stat-icon {
@@ -134,8 +134,8 @@
 .calendar-section {
   background: white;
   padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  box-shadow: 4px 4px 0px var(--text-primary);
   margin-bottom: 2rem;
 }
 
@@ -187,7 +187,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 0;
   background: #f5f5f5;
   position: relative;
   cursor: pointer;
@@ -196,7 +196,7 @@
 
 .calendar-day:hover:not(.empty) {
   transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .calendar-day.empty {
@@ -205,7 +205,7 @@
 }
 
 .calendar-day.marked {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color);
   color: white;
 }
 
@@ -245,11 +245,11 @@
 .legend-color {
   width: 20px;
   height: 20px;
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .legend-color.marked {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color);
 }
 
 .legend-color.unmarked {
@@ -265,8 +265,8 @@
 .recent-activity {
   background: white;
   padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .recent-activity h2 {
@@ -284,7 +284,7 @@
 .activity-item {
   padding: 1rem;
   background: #f9f9f9;
-  border-radius: 8px;
+  border-radius: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;

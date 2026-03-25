@@ -29,7 +29,7 @@
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -43,7 +43,7 @@
 .btn-create:hover {
   background: #5568d3;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 /* Empty State */
@@ -51,8 +51,8 @@
   text-align: center;
   padding: 4rem 2rem;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 0;
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .empty-state h2 {
@@ -69,8 +69,8 @@
 /* Table Styles */
 .courses-table-container {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 0;
+  box-shadow: 4px 4px 0px var(--text-primary);
   overflow: hidden;
 }
 
@@ -117,15 +117,15 @@
 .course-thumb {
   width: 60px;
   height: 60px;
-  border-radius: 8px;
+  border-radius: 0;
   object-fit: cover;
 }
 
 .course-thumb-placeholder {
   width: 60px;
   height: 60px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 0;
+  background: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,7 +148,7 @@
 
 .badge {
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  border-radius: 0;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: capitalize;
@@ -172,7 +172,7 @@
 
 .status-badge {
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  border-radius: 0;
   font-size: 0.75rem;
   font-weight: 600;
   display: inline-block;
@@ -198,7 +198,7 @@
   background: none;
   border: 1px solid #e2e8f0;
   padding: 0.5rem;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -210,7 +210,7 @@
 
 .btn-action:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .btn-view {

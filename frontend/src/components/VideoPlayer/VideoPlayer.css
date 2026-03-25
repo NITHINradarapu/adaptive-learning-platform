@@ -8,7 +8,7 @@
 .video-wrapper {
   position: relative;
   background: #000;
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   overflow: hidden;
   margin-bottom: 2rem;
   box-shadow: var(--shadow-xl);
@@ -16,7 +16,7 @@
 }
 
 .video-wrapper:hover {
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .video-element {
@@ -25,7 +25,7 @@
 }
 
 .video-controls {
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  background: var(--primary-color);
   padding: 1.5rem;
   display: flex;
   align-items: center;
@@ -56,7 +56,7 @@
   align-items: center;
   justify-content: center;
   transition: var(--transition);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .play-button:hover {
@@ -67,7 +67,7 @@
 .seek-bar {
   flex: 1;
   height: 8px;
-  border-radius: 4px;
+  border-radius: 0;
   outline: none;
   background: rgba(255, 255, 255, 0.3);
   cursor: pointer;
@@ -85,7 +85,7 @@
   border-radius: 50%;
   background: white;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 4px 4px 0px var(--text-primary);
   transition: var(--transition);
 }
 
@@ -102,26 +102,26 @@
 }
 
 .checkpoint-indicator {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color);
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: 0;
   font-size: 0.85rem;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 4px 4px 0px var(--text-primary);
   animation: pulse 2s infinite;
 }
 
 .video-info {
   background: white;
-  border-radius: var(--radius-md);
+  border-radius: 0;
   padding: 2rem;
-  box-shadow: var(--shadow-md);
+  box-shadow: 4px 4px 0px var(--text-primary);
   transition: var(--transition);
 }
 
 .video-info:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .video-info h2 {
@@ -159,7 +159,7 @@
   gap: 15px;
   padding: 12px;
   background: #f7fafc;
-  border-radius: 8px;
+  border-radius: 0;
   margin-bottom: 8px;
   transition: background 0.3s;
 }

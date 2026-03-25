@@ -23,11 +23,11 @@
 }
 
 .btn-create-course {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color);
   color: white;
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -39,7 +39,7 @@
 
 .btn-create-course:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 /* Stats Grid */
@@ -52,9 +52,9 @@
 
 .teacher-stats-grid .stat-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 0;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 0px var(--text-primary);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -63,13 +63,13 @@
 
 .teacher-stats-grid .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .teacher-stats-grid .stat-icon {
   width: 60px;
   height: 60px;
-  border-radius: 12px;
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,19 +78,19 @@
 }
 
 .stat-icon.courses {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color);
 }
 
 .stat-icon.students {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: var(--primary-color);
 }
 
 .stat-icon.rating {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: var(--primary-color);
 }
 
 .stat-icon.revenue {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  background: var(--primary-color);
 }
 
 .teacher-stats-grid .stat-content h3 {
@@ -109,9 +109,9 @@
 /* My Courses Section */
 .my-courses-section {
   background: white;
-  border-radius: 12px;
+  border-radius: 0;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 0px var(--text-primary);
   margin-bottom: 2rem;
 }
 
@@ -166,7 +166,7 @@
 
 .status-badge {
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  border-radius: 0;
   font-size: 0.85rem;
   font-weight: 600;
   display: inline-block;
@@ -192,7 +192,7 @@
   border: none;
   padding: 0.5rem;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 0;
   font-size: 1rem;
   transition: all 0.2s;
 }
@@ -258,17 +258,17 @@
 
 .action-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 0;
   padding: 2rem;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 0px var(--text-primary);
   cursor: pointer;
   transition: all 0.3s;
 }
 
 .action-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0px var(--text-primary);
 }
 
 .action-icon {
@@ -289,11 +289,11 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-color);
   color: white;
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
