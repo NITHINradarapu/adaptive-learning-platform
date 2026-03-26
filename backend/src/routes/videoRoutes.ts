@@ -1,9 +1,7 @@
 import express from 'express';
 import {
-  getModuleVideos,
   getVideo,
   getVideoQuestions,
-  createVideo,
   updateVideo,
   deleteVideo,
   submitCheckpoint,

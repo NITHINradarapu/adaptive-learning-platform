@@ -174,7 +174,7 @@ export const submitCheckpoint = async (req: Request, res: Response): Promise<voi
     }
     
     // Save response
-    const response = await CheckpointResponse.create({
+    await CheckpointResponse.create({
       user: userId,
       video: videoId,
       question: questionId,

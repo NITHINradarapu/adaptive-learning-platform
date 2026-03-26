@@ -164,7 +164,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
  * @route   POST /api/auth/logout
  * @access  Private
  */
-export const logout = (req: Request, res: Response): void => {
+export const logout = (_req: Request, res: Response): void => {
   // With JWT, logout is handled client-side by removing the token
   // Optionally, you can implement token blacklisting here
   res.status(200).json({

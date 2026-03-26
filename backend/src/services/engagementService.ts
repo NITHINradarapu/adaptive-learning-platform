@@ -4,7 +4,6 @@ import LearningProgress from '../models/LearningProgress';
 import CheckpointResponse from '../models/CheckpointResponse';
 import Attendance from '../models/Attendance';
 import User from '../models/User';
-import mongoose from 'mongoose';
 
 /**
  * Engagement Analytics Engine

@@ -1,14 +1,12 @@
 import Course from '../models/Course';
 import LearningProgress from '../models/LearningProgress';
 import CheckpointResponse from '../models/CheckpointResponse';
-import Analytics from '../models/Analytics';
 import EngagementEvent from '../models/EngagementEvent';
 import Module from '../models/Module';
 import Video from '../models/Video';
 import InteractiveQuestion from '../models/InteractiveQuestion';
 import User from '../models/User';
 import riskDetectionService from './riskDetectionService';
-import mongoose from 'mongoose';
 
 /**
  * Teacher Analytics Service

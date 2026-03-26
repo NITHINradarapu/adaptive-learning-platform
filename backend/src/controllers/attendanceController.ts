@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import Attendance from '../models/Attendance';
 import Streak from '../models/Streak';
 import User from '../models/User';
-import LearningProgress from '../models/LearningProgress';
 
 /**
  * @desc    Get attendance status for user

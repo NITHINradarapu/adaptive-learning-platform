@@ -3,7 +3,6 @@ import LearningProgress from '../models/LearningProgress';
 import User from '../models/User';
 import Streak from '../models/Streak';
 import CheckpointResponse from '../models/CheckpointResponse';
-import engagementService from './engagementService';
 import crypto from 'crypto';
 
 /**
@@ -313,7 +312,7 @@ class RLService {
   /**
    * Convert action to human-readable recommendation
    */
-  private actionToRecommendation(action: Action, state: RLState): string {
+  private actionToRecommendation(action: Action, _state: RLState): string {
     const recommendations: Record<Action, string> = {
       recommend_next_topic: 'You\'re doing great! Move on to the next topic.',
       recommend_revision: 'Let\'s review some previous material to strengthen your understanding.',

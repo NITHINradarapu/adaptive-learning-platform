@@ -119,7 +119,7 @@ class RecommendationService {
     return rec;
   }
 
-  private async getEasyContentRecommendation(userId: string, rec: any) {
+  private async getEasyContentRecommendation(_userId: string, rec: any) {
     const easyCourses = await Course.find({
       difficultyLevel: 'beginner',
       isPublished: true,

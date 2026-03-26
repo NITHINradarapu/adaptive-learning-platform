@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import LearningProgress, { ProgressStatus } from '../models/LearningProgress';
 import User from '../models/User';
-import Course from '../models/Course';
-import Module from '../models/Module';
 import Video from '../models/Video';
 import { adaptiveLearningService } from '../services/adaptiveLearningService';
 

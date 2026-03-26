@@ -1,8 +1,6 @@
 import express from 'express';
 import {
-  getCourseModules,
   getModule,
-  createModule,
   updateModule,
   deleteModule
 } from '../controllers/moduleController';

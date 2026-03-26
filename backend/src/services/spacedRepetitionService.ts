@@ -1,8 +1,6 @@
 import SpacedRepetition from '../models/SpacedRepetition';
 import InteractiveQuestion from '../models/InteractiveQuestion';
-import Module from '../models/Module';
 import Video from '../models/Video';
-import mongoose from 'mongoose';
 
 /**
  * Spaced Repetition Engine

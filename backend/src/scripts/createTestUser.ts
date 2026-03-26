@@ -19,7 +19,7 @@ const createTestUser = async () => {
     }
 
     // Create new test user
-    const user = await User.create({
+    await User.create({
       name: 'Test User',
       email: testEmail,
       password: testPassword,
